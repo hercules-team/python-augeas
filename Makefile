@@ -1,3 +1,4 @@
+PREFIX=/usr
 
 all: augeas_wrap.c
 
@@ -6,7 +7,7 @@ clean:
 	rm -fr build
 
 augeas_wrap.c: augeas.i
-	swig -python   -I/usr/include/ augeas.i
+	swig -python   -I$(PREFIX)/include/ augeas.i
 
 _augeas.so: augeas_wrap.c
 	python setup.py build_ext
