@@ -3,7 +3,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:		python-augeas
-Version:	1.0
+Version:	0.0.8
 Release:	1%{?dist}
 Summary:	Python bindings to augeas
 
@@ -44,5 +44,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Wed Apr 16 2008 Harald Hoyer <harald@redhat.com> - 1.0
+* Wed Apr 16 2008 Harald Hoyer <harald@redhat.com> - 0.0.8-1
 - initial version

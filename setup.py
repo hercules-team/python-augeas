@@ -13,9 +13,11 @@ augeas_module = Extension('_augeas',
                           )
 
 setup (name = 'augeas',
-       version = '0.1',
-       author      = "Author",
-       description = """Augeas""",
+       version = '0.0.8',
+       author      = "Harald Hoyer",
+       author_email = "augeas-devel@redhat.com",
+       description = """Python bindings for Augeas""",
        ext_modules = [augeas_module],
        py_modules = ["augeas"],
+       url = "http://augeas.net/"
        )
