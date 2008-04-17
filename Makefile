@@ -14,3 +14,8 @@ _augeas.so: augeas_wrap.c
 
 install: _augeas.so
 	python setup.py install
+
+sdist: augeas_wrap.c
+	python setup.py sdist
+
+.PHONY: sdist
