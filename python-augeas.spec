@@ -10,7 +10,7 @@ Summary:        Python bindings to augeas
 Group:          Development/Languages
 License:        LGPLv2+
 URL:            http://augeas.net/
-Source0:        python-augeas-%{version}.tar.gz
+Source0:        http://augeas.net/download/python/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  python-devel swig augeas-devel
