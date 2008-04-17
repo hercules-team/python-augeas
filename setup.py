@@ -12,7 +12,7 @@ augeas_module = Extension('_augeas',
                           libraries=['augeas'],                          
                           )
 
-setup (name = 'augeas',
+setup (name = 'python-augeas',
        version = '0.0.8',
        author      = "Harald Hoyer",
        author_email = "augeas-devel@redhat.com",
