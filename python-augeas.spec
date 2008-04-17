@@ -2,18 +2,18 @@
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
-Name:		python-augeas
-Version:	0.0.8
-Release:	1%{?dist}
-Summary:	Python bindings to augeas
+Name:           python-augeas
+Version:        0.0.8
+Release:        1%{?dist}
+Summary:        Python bindings to augeas
 
-Group:		Development/Languages
-License:	LGPLv2+
+Group:          Development/Languages
+License:        LGPLv2+
 URL:            http://augeas.net/
-Source0:	python-augeas-%{version}.tar.bz2
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:        python-augeas-%{version}.tar.gz
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:	python-devel swig augeas-devel
+BuildRequires:  python-devel swig augeas-devel
 
 %description
 python-augeas is a set of Python bindings around augeas.
