@@ -67,8 +67,8 @@ http://augeas.net/
   $result = PyList_New(0);
   for (i=0; i < result; i++) {
         PyObject *o = PyString_FromString((char *)(*$1)[i]);
-    	PyList_Append($result, o);
-	free((void*)(*$1)[i]) ; 
+        PyList_Append($result, o);
+        free((void*)(*$1)[i]) ; 
   }
   free((char *) *$1);
 %}
@@ -82,10 +82,9 @@ http://augeas.net/
 #ifdef SWIGPYTHON
 %pythoncode %{
 
-
 class augeas:
-    """"""
-
+    """
+    """
     def __init__(self, root="/", loadpath=None, flags=AUG_NONE):
         """
         Use ROOT as the filesystem root. If ROOT is None, use the value of the
@@ -154,18 +153,10 @@ class augeas:
         """
         return _augeas.aug_rm(self.__handler, path)
 
-    def match(self, path):
+    def match(self, path_expression):
         """
-        Return the number of matches of the path expression PATH in AUG. If
-        MATCHES is non-NULL, an array with the returned number of elements will
-        be allocated and filled with the paths of the matches. The caller must
-        free both the array and the entries in it. The returned paths are
-        sufficiently qualified to make sure that they match exactly one node in
-        the current tree.
-        If MATCHES is NULL, nothing is allocated and only the number
-        of matches is returned.
-        
-        Returns -1 on error, or the total number of matches (which might be 0).
+        Returns a list of paths which matches the PATH expression.
+
         Path expressions use a very simple subset of XPath: the path PATH
         consists of a number of segments, separated by '/'; each segment can
         either be a '*', matching any tree node, or a string, optionally
@@ -202,16 +193,16 @@ class augeas:
         return _augeas.aug_print(self.__handler, out, path)
 
     def __del__(self):
-    	"""
+        """
 	"""
         _augeas.aug_close(self.__handler)
 
 
 __all__ = [ "augeas",
-	"AUG_NONE",
+        "AUG_NONE",
         "AUG_SAVE_BACKUP",
-	"AUG_SAVE_NEWFILE",
-	"AUG_TYPE_CHECK",
-	 ]
+        "AUG_SAVE_NEWFILE",
+        "AUG_TYPE_CHECK",
+        ]
 %}
 #endif
