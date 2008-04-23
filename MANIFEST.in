@@ -1,3 +1,5 @@
 include Makefile
 include python-augeas.spec
 include augeas.i
+include COPYING
+include AUTHORS
