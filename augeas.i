@@ -153,7 +153,7 @@ class augeas:
         """
         return _augeas.aug_rm(self.__handler, path)
 
-    def match(self, path_expression):
+    def match(self, path):
         """
         Returns a list of paths which matches the PATH expression.
 
