@@ -80,9 +80,9 @@ http://augeas.net/
     if (result) {
         Py_XDECREF($result);
         $result = PyString_FromString(*$1);
-	free((char *) *$1);	
+        free((char *) *$1);
     } else {
-      	$result = Py_None;
+        $result = Py_None;
     }
 }
 
@@ -115,6 +115,8 @@ class augeas:
 
         """
         self.__handler = _augeas.aug_init(root, loadpath, flags)
+        if not self.__handler:
+            raise ValueError
 
     def get(self, path):
         """
@@ -129,20 +131,14 @@ class augeas:
         """
         Set the value associated with PATH to VALUE. VALUE is copied into the
         internal data structure. Intermediate entries are created if they don't
-        exist. Return 0 on success, -1 on error. It is an error if more than one
+        exist. Return true on success, false on error. It is an error if more than one
         node matches PATH.
         """
-        return _augeas.aug_set(self.__handler, path, value)
+        if (_augeas.aug_set(self.__handler, path, value) == 0):
+            return true
+        else:
+            return false
     
-    def exists(self, path):
-        """
-        Return 1 if there is exactly one node matching PATH, 0 if there is none,
-        and -1 if there is more than one node matching PATH. You should only
-        call AUG_GET for paths for which AUG_EXISTS returns 1, and AUG_SET for
-        paths for which AUG_EXISTS returns 0 or 1.
-        """
-        return _augeas.aug_exists(self.__handler, path)
-
     def insert(self, path, label, before):
         """
         Create a new sibling LABEL for PATH by inserting into the tree just
@@ -150,9 +146,12 @@ class augeas:
         PATH must match exactly one existing node in the tree, and LABEL must be
         a label, i.e. not contain a '/', '*' or end with a bracketed index
         '[N]'.
-        Return 0 on success, and -1 if the insertion fails.
+        Return true on success, and false if the insertion fails.
         """
-        return _augeas.aug_insert(self.__handler, path, label, before)
+        if (_augeas.aug_insert(self.__handler, path, label, before) == 0):
+            return true
+        else:
+            return false
 
     def rm(self, path):
         """
@@ -181,8 +180,8 @@ class augeas:
     
     def save(self):
         """
-        Write all pending changes to disk. Return -1 if an error is encountered,
-        0 on success. Only files that had any changes made to them are written.
+        Write all pending changes to disk. Return false if an error is encountered,
+        true on success. Only files that had any changes made to them are written.
         
         If AUG_SAVE_NEWFILE is set in the FLAGS passed to AUG_INIT, create
         changed files as new files with the extension ".augnew", and leave teh
@@ -193,7 +192,10 @@ class augeas:
         
         If neither of these flags is set, overwrite the original file.
         """
-        return _augeas.aug_save(self.__handler)
+        if (_augeas.aug_save(self.__handler) == 0):
+            return true
+        else:
+            return false
 
     def printnodes(self, out, path):
         """
