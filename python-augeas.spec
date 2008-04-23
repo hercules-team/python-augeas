@@ -23,7 +23,7 @@ python-augeas is a set of Python bindings around augeas.
 
 %build
 # Remove CFLAGS=... for noarch packages (unneeded)
-CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build_ext
+CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build_ext -i
 CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 
 %install

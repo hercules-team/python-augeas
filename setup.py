@@ -4,13 +4,16 @@
 setup.py file for augeas
 """
 
+import os
+prefix = os.environ.get("prefix", "/usr")
+
 from distutils.core import setup, Extension
 
 
 augeas_module = Extension('_augeas',
                           sources=['augeas.i'],
                           libraries=['augeas'],                          
-                          swig_opts=['-Wall', '-I/usr/include/'],
+                          swig_opts=['-Wall', '-I'+prefix+'/include/'],
                           )
 
 setup (name = 'python-augeas',
