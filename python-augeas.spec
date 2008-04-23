@@ -23,7 +23,7 @@ python-augeas is a set of Python bindings around augeas.
 
 %build
 # Remove CFLAGS=... for noarch packages (unneeded)
-make
+CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build_ext
 CFLAGS="$RPM_OPT_FLAGS" %{__python} setup.py build
 
 %install
@@ -36,9 +36,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc COPYING AUTHORS
+%doc COPYING AUTHORS README.txt
 # For arch-specific packages: sitearch
-%{python_sitearch}/*
+%{python_sitearch}/augeas.py*
+%{python_sitearch}/_augeas.so
+%{python_sitearch}/*.egg-info
 
 
 %changelog

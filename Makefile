@@ -1,21 +1,21 @@
-PREFIX=/usr
 
-all: augeas_wrap.c
+VERSION=$(shell grep version setup.py|sed -e "s/^[^']*//;s/[',]//g;")
+
+all: build
 
 clean:
-	rm -f augeas.py augeas_wrap.c
-	rm -fr build
+	python setup.py clean
 
-augeas_wrap.c: augeas.i
-	swig -Wall -python   -I$(PREFIX)/include/ augeas.i
+build:
+	python setup.py build
 
-_augeas.so: augeas_wrap.c
-	python setup.py build_ext
-
-install: _augeas.so
+install:
 	python setup.py install
 
-sdist: augeas_wrap.c
+sdist:
 	python setup.py sdist
 
-.PHONY: sdist
+srpm: sdist
+	rpmbuild -ts --define "_srcrpmdir ."  dist/python-augeas-$(VERSION).tar.gz
+
+.PHONY: sdist install build clean srpm
