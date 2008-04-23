@@ -7,7 +7,7 @@ clean:
 	rm -fr build
 
 augeas_wrap.c: augeas.i
-	swig -python   -I$(PREFIX)/include/ augeas.i
+	swig -Wall -python   -I$(PREFIX)/include/ augeas.i
 
 _augeas.so: augeas_wrap.c
 	python setup.py build_ext

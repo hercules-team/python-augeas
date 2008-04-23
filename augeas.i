@@ -42,10 +42,6 @@ http://augeas.net/
 %{
 #include "augeas.h"
 %}
-
-
-#ifdef SWIGPYTHON
-
 // Type mapping for grabbing a FILE * from Python
 
 %typemap(in) FILE * {
@@ -64,6 +60,7 @@ http://augeas.net/
 %typemap(argout) char ***matches %{
   int i;
 
+  Py_XDECREF($result);
   $result = PyList_New(0);
   for (i=0; i < result; i++) {
         PyObject *o = PyString_FromString((char *)(*$1)[i]);
@@ -73,13 +70,25 @@ http://augeas.net/
   free((char *) *$1);
 %}
 
-#endif
+
+%typemap(in, numinputs=0) const char **value (char *tmp) %{
+  $1 = &tmp;
+  *$1 = NULL;
+%}
+
+%typemap(argout) const char **value {
+    if (result) {
+        Py_XDECREF($result);
+        $result = PyString_FromString(*$1);
+	free((char *) *$1);	
+    } else {
+      	$result = Py_None;
+    }
+}
+
 
 %include "augeas.h"
 
-
-
-#ifdef SWIGPYTHON
 %pythoncode %{
 
 class augeas:
@@ -109,7 +118,7 @@ class augeas:
 
     def get(self, path):
         """
-        Lookup the value associated with PATH. Return None if PATH does not
+        Lookup the value associated with PATH. Returns None if PATH does not
         exist, or if it matches more than one node, or if that is the value
         associated with the single node matched by PATH.
         See 'exists' on how to tell these cases apart.
@@ -204,5 +213,7 @@ __all__ = [ "augeas",
         "AUG_SAVE_NEWFILE",
         "AUG_TYPE_CHECK",
         ]
+
 %}
-#endif
+
+
