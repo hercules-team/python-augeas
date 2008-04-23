@@ -1,5 +1,4 @@
 # sitelib for noarch packages, sitearch for others (remove the unneeded one)
-%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-augeas
@@ -35,10 +34,9 @@ rm -rf $RPM_BUILD_ROOT
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-
 %files
 %defattr(-,root,root,-)
-%doc
+%doc COPYING AUTHORS
 # For arch-specific packages: sitearch
 %{python_sitearch}/*
 
