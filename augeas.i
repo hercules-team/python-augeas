@@ -62,7 +62,7 @@ http://augeas.net/
 
   Py_XDECREF($result);
   $result = PyList_New(0);
-  for (i=0; i < result; i++) {
+  for (i=0; result > 0 && i < result; i++) {
         PyObject *o = PyString_FromString((char *)(*$1)[i]);
         PyList_Append($result, o);
         free((void*)(*$1)[i]) ; 
@@ -77,11 +77,12 @@ http://augeas.net/
 %}
 
 %typemap(argout) const char **value {
-    if (result) {
+    if ((result > 0) && (*$1)) {
         Py_XDECREF($result);
         $result = PyString_FromString(*$1);
         free((char *) *$1);
     } else {
+        Py_XDECREF($result);
         $result = Py_None;
     }
 }
@@ -131,13 +132,13 @@ class augeas:
         """
         Set the value associated with PATH to VALUE. VALUE is copied into the
         internal data structure. Intermediate entries are created if they don't
-        exist. Return true on success, false on error. It is an error if more than one
+        exist. Return True on success, False on error. It is an error if more than one
         node matches PATH.
         """
         if (_augeas.aug_set(self.__handler, path, value) == 0):
-            return true
+            return True
         else:
-            return false
+            return False
     
     def insert(self, path, label, before):
         """
@@ -146,12 +147,12 @@ class augeas:
         PATH must match exactly one existing node in the tree, and LABEL must be
         a label, i.e. not contain a '/', '*' or end with a bracketed index
         '[N]'.
-        Return true on success, and false if the insertion fails.
+        Return True on success, and False if the insertion fails.
         """
         if (_augeas.aug_insert(self.__handler, path, label, before) == 0):
-            return true
+            return True
         else:
-            return false
+            return False
 
     def rm(self, path):
         """
@@ -180,8 +181,8 @@ class augeas:
     
     def save(self):
         """
-        Write all pending changes to disk. Return false if an error is encountered,
-        true on success. Only files that had any changes made to them are written.
+        Write all pending changes to disk. Return False if an error is encountered,
+        True on success. Only files that had any changes made to them are written.
         
         If AUG_SAVE_NEWFILE is set in the FLAGS passed to AUG_INIT, create
         changed files as new files with the extension ".augnew", and leave teh
@@ -193,9 +194,9 @@ class augeas:
         If neither of these flags is set, overwrite the original file.
         """
         if (_augeas.aug_save(self.__handler) == 0):
-            return true
+            return True
         else:
-            return false
+            return False
 
     def printnodes(self, out, path):
         """
