@@ -1,0 +1,1 @@
+/home/pub 	192.168.10.1(rw) 	192.168.10.*(ro) 192.168.10.12(rw,root_squash) 192.168.10.10(rw,root_squash)

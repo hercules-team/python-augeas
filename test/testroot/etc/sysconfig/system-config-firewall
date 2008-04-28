@@ -1,0 +1,8 @@
+# Configuration file for system-config-firewall
+
+--enabled
+--service=ssh
+--service=samba
+--service=dns
+--service=ipsec
+--service=mdns

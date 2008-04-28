@@ -24,7 +24,7 @@ sdist:
 	PREFIX=$(PREFIX) python setup.py sdist
 
 check:
-	python test_augeas.py
+	make -C test check
 
 srpm: sdist
 	rpmbuild -ts --define "_srcrpmdir ."  dist/python-augeas-$(VERSION).tar.gz

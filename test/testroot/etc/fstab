@@ -1,0 +1,10 @@
+/dev/VolGroup00/LogVol00 /                       ext3    defaults        1 1
+LABEL=/boot             /boot                   ext3    defaults        1 2
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+#tmpfs 			/tmp 			tmpfs 	defaults 	0 0
+/dev/mapper/swap	none 			swap 	defaults 	0 0
+/dev/mapper/data 			/pub 		ext3 	defaults 	0 0
+/dev/VolGroup00/LogVol01		/home		ext3	defaults	1 2

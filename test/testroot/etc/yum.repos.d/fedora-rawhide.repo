@@ -1,0 +1,48 @@
+# These packages are untested and still under development. This
+# repository is used for development of new releases.
+#
+# This repository can see significant daily turnover and major
+# functionality changes which cause unexpected problems with other
+# development packages. Please use these packages if you want to work
+# with the Fedora developers by testing these new development packages.
+#
+# fedora-test-list@redhat.com is available as a discussion forum for
+# testing and troubleshooting for development packages in conjunction
+# with new test releases.
+#
+# More information is available at http://fedoraproject.org/wiki/Testing 
+#
+# Reproducible and reportable issues should be filed at
+# http://bugzilla.redhat.com/.
+#
+# Product: Fedora
+# Version: rawhide
+
+[rawhide]
+name=Fedora - Rawhide
+failovermethod=priority
+#baseurl=http://download.fedora.redhat.com/pub/fedora/linux/development/$basearch/os/
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=rawhide&arch=$basearch
+enabled=1
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-test file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora
+exclude=xorg-x11-server*,xorg-x11-drivers*,linuxwacom,rhpxl,mesa*,xorg-x11-drv-*
+
+[rawhide-debuginfo]
+name=Fedora - Rawhide - Debug
+failovermethod=priority
+#baseurl=http://download.fedora.redhat.com/pub/fedora/linux/development/$basearch/debug/
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=rawhide-debug&arch=$basearch
+enabled=0
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-test file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora
+
+[rawhide-source]
+name=Fedora - Rawhide - Source
+failovermethod=priority
+#baseurl=http://download.fedora.redhat.com/pub/fedora/linux/development/source/SRPMS/
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=rawhide-source&arch=$basearch
+enabled=0
+gpgcheck=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-test file:///etc/pki/rpm-gpg/RPM-GPG-KEY-fedora
+

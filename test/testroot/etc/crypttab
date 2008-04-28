@@ -1,0 +1,2 @@
+swap /dev/mapper/VolGroup00-luks--swap /dev/urandom swap,cipher=aes-cbc-essiv:sha256
+data /dev/mapper/DATA-lvol0

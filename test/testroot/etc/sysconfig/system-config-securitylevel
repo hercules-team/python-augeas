@@ -1,0 +1,4 @@
+# system-config-securitylevel config written out by anaconda
+
+--enabled
+--port=22:tcp

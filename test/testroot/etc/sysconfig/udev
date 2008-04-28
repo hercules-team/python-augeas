@@ -1,0 +1,8 @@
+# If set to "yes", generates cache shell files of what MAKEDEV would do.
+# May speedup some systems with slow disks.
+# EXPERIMENTAL - use at your own risk
+UDEV_USE_MAKEDEV_CACHE="no"
+
+# Generates /dev/disk/by* symlinks.
+# Set to "no", if you *really* don't need them and want a speedup at boot time.
+UDEV_PERSISTENT_STORAGE="yes"

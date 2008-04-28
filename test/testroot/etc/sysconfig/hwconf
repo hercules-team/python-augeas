@@ -1,0 +1,656 @@
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: i82975x_edac
+desc: "Intel Corporation 82975X Memory Controller Hub"
+vendorId: 8086
+deviceId: 277c
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev:  0
+pcifn:  0
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: shpchp
+desc: "Intel Corporation 82975X PCI Express Root Port"
+vendorId: 8086
+deviceId: 277d
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev:  1
+pcifn:  0
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: shpchp
+desc: "Intel Corporation 82801G (ICH7 Family) PCI Express Port 1"
+vendorId: 8086
+deviceId: 27d0
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1c
+pcifn:  0
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: shpchp
+desc: "Intel Corporation 82801GR/GH/GHM (ICH7 Family) PCI Express Port 5"
+vendorId: 8086
+deviceId: 27e0
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1c
+pcifn:  4
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: shpchp
+desc: "Intel Corporation 82801GR/GH/GHM (ICH7 Family) PCI Express Port 6"
+vendorId: 8086
+deviceId: 27e2
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1c
+pcifn:  5
+-
+class: OTHER
+bus: PCI
+detached: 0
+desc: "Intel Corporation 82801 PCI Bridge"
+vendorId: 8086
+deviceId: 244e
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1e
+pcifn:  0
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: iTCO_wdt
+desc: "Intel Corporation 82801GB/GR (ICH7 Family) LPC Interface Bridge"
+vendorId: 8086
+deviceId: 27b8
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1f
+pcifn:  0
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: i2c-i801
+desc: "Intel Corporation 82801G (ICH7 Family) SMBus Controller"
+vendorId: 8086
+deviceId: 27da
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1f
+pcifn:  3
+-
+class: OTHER
+bus: PCI
+detached: 0
+driver: shpchp
+desc: "Hint Corp HB6 Universal PCI-PCI bridge (non-transparent mode)"
+vendorId: 3388
+deviceId: 0021
+subVendorId: 0000
+subDeviceId: 0000
+pciType: 1
+pcidom:    0
+pcibus:  5
+pcidev:  4
+pcifn:  0
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Dell Dell USB Keyboard"
+usbclass: 3
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 1
+usblevel: 3
+usbport: 0
+usbdev: 6
+vendorId: 413c
+deviceId: 2010
+usbmfr: Dell
+usbprod: Dell USB Keyboard
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Dell Dell USB Keyboard Hub"
+usbclass: 9
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 1
+usblevel: 2
+usbport: 1
+usbdev: 5
+vendorId: 413c
+deviceId: 1003
+usbmfr: Dell
+usbprod: Dell USB Keyboard Hub
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Linux 2.6.24.3-50.fc8 ehci_hcd EHCI Host Controller"
+usbclass: 9
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 1
+usblevel: 0
+usbport: 0
+usbdev: 1
+vendorId: 0000
+deviceId: 0000
+usbmfr: Linux 2.6.24.3-50.fc8 ehci_hcd
+usbprod: EHCI Host Controller
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Linux 2.6.24.3-50.fc8 uhci_hcd UHCI Host Controller"
+usbclass: 9
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 5
+usblevel: 0
+usbport: 0
+usbdev: 1
+vendorId: 0000
+deviceId: 0000
+usbmfr: Linux 2.6.24.3-50.fc8 uhci_hcd
+usbprod: UHCI Host Controller
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Linux 2.6.24.3-50.fc8 uhci_hcd UHCI Host Controller"
+usbclass: 9
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 4
+usblevel: 0
+usbport: 0
+usbdev: 1
+vendorId: 0000
+deviceId: 0000
+usbmfr: Linux 2.6.24.3-50.fc8 uhci_hcd
+usbprod: UHCI Host Controller
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Linux 2.6.24.3-50.fc8 uhci_hcd UHCI Host Controller"
+usbclass: 9
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 3
+usblevel: 0
+usbport: 0
+usbdev: 1
+vendorId: 0000
+deviceId: 0000
+usbmfr: Linux 2.6.24.3-50.fc8 uhci_hcd
+usbprod: UHCI Host Controller
+-
+class: OTHER
+bus: USB
+detached: 0
+desc: "Linux 2.6.24.3-50.fc8 uhci_hcd UHCI Host Controller"
+usbclass: 9
+usbsubclass: 0
+usbprotocol: 0
+usbbus: 2
+usblevel: 0
+usbport: 0
+usbdev: 1
+vendorId: 0000
+deviceId: 0000
+usbmfr: Linux 2.6.24.3-50.fc8 uhci_hcd
+usbprod: UHCI Host Controller
+-
+class: OTHER
+bus: PSAUX
+detached: 0
+driver: pcspkr
+desc: "PC Speaker"
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0103"
+deviceId: PNP0103
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0200"
+deviceId: PNP0200
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+driver: parport_pc
+desc: "PNP0401"
+deviceId: PNP0401
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0501"
+deviceId: PNP0501
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0800"
+deviceId: PNP0800
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0a03"
+deviceId: PNP0a03
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0b00"
+deviceId: PNP0b00
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0c01"
+deviceId: PNP0c01
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0c01"
+deviceId: PNP0c01
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0c02"
+deviceId: PNP0c02
+-
+class: OTHER
+bus: ISAPNP
+detached: 0
+desc: "PNP0c04"
+deviceId: PNP0c04
+-
+class: OTHER
+bus: PSAUX
+detached: 0
+desc: "Power Button (CM)"
+-
+class: OTHER
+bus: PSAUX
+detached: 0
+desc: "Power Button (FF)"
+-
+class: NETWORK
+bus: PCI
+detached: 0
+device: eth0
+driver: tg3
+desc: "Broadcom Corporation NetXtreme BCM5754 Gigabit Ethernet PCI Express"
+network.hwaddr: 00:1d:09:03:74:57
+vendorId: 14e4
+deviceId: 167a
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  4
+pcidev:  0
+pcifn:  0
+-
+class: MOUSE
+bus: USB
+detached: 0
+device: input/mice
+driver: genericwheelusb
+desc: "Dell Dell USB Optical Mouse"
+usbclass: 3
+usbsubclass: 1
+usbprotocol: 2
+usbbus: 1
+usblevel: 2
+usbport: 0
+usbdev: 4
+vendorId: 413c
+deviceId: 3012
+usbmfr: Dell
+usbprod: Dell USB Optical Mouse
+-
+class: MOUSE
+bus: PSAUX
+detached: 0
+device: input/mice
+driver: generic3ps/2
+desc: "Macintosh mouse button emulation"
+-
+class: AUDIO
+bus: PCI
+detached: 0
+driver: snd-hda-intel
+desc: "Intel Corporation 82801G (ICH7 Family) High Definition Audio Controller"
+vendorId: 8086
+deviceId: 27d8
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1b
+pcifn:  0
+-
+class: CDROM
+bus: SCSI
+detached: 0
+device: scd0
+desc: "HL-DT-ST DVD+-RW GSA-H53N"
+host: 4
+id: 0
+channel: 0
+lun: 0
+-
+class: VIDEO
+bus: PCI
+detached: 0
+driver: nvidia
+desc: "nVidia Corporation G71GL [Quadro FX 3500]"
+video.xdriver: nv
+vendorId: 10de
+deviceId: 029d
+subVendorId: 10de
+subDeviceId: 032b
+pciType: 1
+pcidom:    0
+pcibus:  1
+pcidev:  0
+pcifn:  0
+-
+class: HD
+bus: USB
+detached: 0
+driver: usb-storage
+desc: "TEAC CA-200"
+usbclass: 8
+usbsubclass: 6
+usbprotocol: 80
+usbbus: 1
+usblevel: 1
+usbport: 2
+usbdev: 2
+vendorId: 0644
+deviceId: 0200
+usbmfr: TEAC
+usbprod: CA-200
+-
+class: HD
+bus: SCSI
+detached: 0
+device: sda
+desc: "ATA WDC WD1600ADFS-7"
+host: 0
+id: 0
+channel: 0
+lun: 0
+-
+class: HD
+bus: SCSI
+detached: 0
+device: sdb
+desc: "ATA WDC WD1600ADFS-7"
+host: 2
+id: 0
+channel: 0
+lun: 0
+-
+class: HD
+bus: SCSI
+detached: 0
+device: sdc
+desc: "TEAC USB   HS-CF Card"
+host: 6
+id: 0
+channel: 0
+lun: 0
+-
+class: HD
+bus: SCSI
+detached: 0
+device: sdd
+desc: "TEAC USB   HS-xD/SM"
+host: 6
+id: 0
+channel: 0
+lun: 1
+-
+class: HD
+bus: SCSI
+detached: 0
+device: sde
+desc: "TEAC USB   HS-MS Card"
+host: 6
+id: 0
+channel: 0
+lun: 2
+-
+class: HD
+bus: SCSI
+detached: 0
+device: sdf
+desc: "TEAC USB   HS-SD Card"
+host: 6
+id: 0
+channel: 0
+lun: 3
+-
+class: RAID
+bus: PCI
+detached: 0
+driver: ahci
+desc: "Intel Corporation 82801GR/GH (ICH7 Family) SATA RAID Controller"
+vendorId: 8086
+deviceId: 27c3
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1f
+pcifn:  2
+-
+class: CAPTURE
+bus: PCI
+detached: 0
+driver: ivtv
+desc: "Internext Compression Inc iTVC16 (CX23416) MPEG-2 Encoder"
+vendorId: 4444
+deviceId: 0016
+subVendorId: 0070
+subDeviceId: e807
+pciType: 1
+pcidom:    0
+pcibus:  6
+pcidev:  8
+pcifn:  0
+-
+class: CAPTURE
+bus: PCI
+detached: 0
+driver: ivtv
+desc: "Internext Compression Inc iTVC16 (CX23416) MPEG-2 Encoder"
+vendorId: 4444
+deviceId: 0016
+subVendorId: 0070
+subDeviceId: e817
+pciType: 1
+pcidom:    0
+pcibus:  6
+pcidev:  9
+pcifn:  0
+-
+class: KEYBOARD
+bus: USB
+detached: 0
+driver: keybdev
+desc: "Dell Dell USB Keyboard"
+usbclass: 3
+usbsubclass: 1
+usbprotocol: 1
+usbbus: 1
+usblevel: 3
+usbport: 0
+usbdev: 6
+vendorId: 413c
+deviceId: 2010
+usbmfr: Dell
+usbprod: Dell USB Keyboard
+-
+class: USB
+bus: PCI
+detached: 0
+driver: uhci-hcd
+desc: "Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #1"
+vendorId: 8086
+deviceId: 27c8
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1d
+pcifn:  0
+-
+class: USB
+bus: PCI
+detached: 0
+driver: uhci-hcd
+desc: "Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #2"
+vendorId: 8086
+deviceId: 27c9
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1d
+pcifn:  1
+-
+class: USB
+bus: PCI
+detached: 0
+driver: uhci-hcd
+desc: "Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #3"
+vendorId: 8086
+deviceId: 27ca
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1d
+pcifn:  2
+-
+class: USB
+bus: PCI
+detached: 0
+driver: uhci-hcd
+desc: "Intel Corporation 82801G (ICH7 Family) USB UHCI Controller #4"
+vendorId: 8086
+deviceId: 27cb
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1d
+pcifn:  3
+-
+class: USB
+bus: PCI
+detached: 0
+driver: ehci-hcd
+desc: "Intel Corporation 82801G (ICH7 Family) USB2 EHCI Controller"
+vendorId: 8086
+deviceId: 27cc
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1d
+pcifn:  7
+-
+class: FIREWIRE
+bus: PCI
+detached: 0
+driver: firewire-ohci
+desc: "Agere Systems FW323"
+vendorId: 11c1
+deviceId: 5811
+subVendorId: 1028
+subDeviceId: 8010
+pciType: 1
+pcidom:    0
+pcibus:  5
+pcidev:  2
+pcifn:  0
+-
+class: IDE
+bus: PCI
+detached: 0
+driver: ata_piix
+desc: "Intel Corporation 82801G (ICH7 Family) IDE Controller"
+vendorId: 8086
+deviceId: 27df
+subVendorId: 1028
+subDeviceId: 01de
+pciType: 1
+pcidom:    0
+pcibus:  0
+pcidev: 1f
+pcifn:  1

@@ -1,0 +1,63 @@
+# Service-specific configuration file for tomcat5 services
+# This will be sourced by the SysV service script after the global
+# configuration file /etc/tomcat5/tomcat5.conf, thus allowing values
+# to be overridden on a per-service way
+#
+# NEVER change the init script itself:
+# To change values for all services make your changes in
+# /etc/tomcat5/tomcat5.conf
+# To change values for a specific service, change it here
+# To create a new service, create a link from /etc/init.d/<you new service> to
+# /etc/init.d/tomcat5 (do not copy the init script) and make a copy of the
+# /etc/sysconfig/tomcat5 file to /etc/sysconfig/<you new service> and change
+# the property values so the two services won't conflict
+# Register the new service in the system as usual (see chkconfig and similars)
+#
+# tomcat5 service configuration file
+
+# you could also override JAVA_HOME here
+# Where your java installation lives
+JAVA_HOME="/usr/lib/jvm/java"
+
+# Where your tomcat installation lives
+# That change from previous RPM where TOMCAT_HOME 
+# used to be /var/tomcat.
+# Now /var/tomcat will be the base for webapps only
+CATALINA_HOME="/usr/share/tomcat5"
+JASPER_HOME="/usr/share/tomcat5"
+CATALINA_TMPDIR="/usr/share/tomcat5/temp"
+JAVA_ENDORSED_DIRS="/usr/share/tomcat5/common/endorsed"
+
+# You can pass some parameters to java
+# here if you wish to
+#JAVA_OPTS="-Xminf0.1 -Xmaxf0.3"
+
+# Use JAVA_OPTS to set java.library.path for libtcnative.so
+#JAVA_OPTS="-Djava.library.path=/usr/lib64
+
+# Bug 190:
+# https://www.jpackage.org/bugzilla/show_bug.cgi?id=190 
+# System property catalina.ext.dirs should be set to its default value
+# for ExtensionValidator to be functional. 
+JAVA_OPTS="$JAVA_OPTS -Dcatalina.ext.dirs=$CATALINA_HOME/shared/lib:$CATALINA_HOME/common/lib"
+
+# What user should run tomcat
+TOMCAT_USER="tomcat"
+
+# You can change your tomcat locale here
+#LANG=en_US
+
+# Time to wait in seconds, before killing process
+SHUTDOWN_WAIT=30
+
+# Set the TOMCAT_PID location
+CATALINA_PID=/var/run/tomcat5.pid
+
+# Connector port is 8080 for this tomcat5 instance
+#CONNECTOR_PORT=8080
+
+# If you wish to further customize your tomcat environment,
+# put your own definitions here
+# (i.e. LD_LIBRARY_PATH for some jdbc drivers)
+# Just do not forget to export them :)
+

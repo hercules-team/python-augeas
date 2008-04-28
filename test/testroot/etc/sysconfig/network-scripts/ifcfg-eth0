@@ -1,0 +1,10 @@
+# Broadcom Corporation NetXtreme BCM5754 Gigabit Ethernet PCI Express
+DEVICE=eth0
+BOOTPROTO=dhcp
+ONBOOT=yes
+PEERDNS=yes
+IPV6INIT=no
+NM_CONTROLLED=no
+TYPE=Ethernet
+USERCTL=no
+DNS1=127.0.0.1

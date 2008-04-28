@@ -1,0 +1,2 @@
+boot=/dev/sdc
+forcelba=0

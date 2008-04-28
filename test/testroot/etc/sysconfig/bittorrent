@@ -1,0 +1,8 @@
+SEEDDIR=/var/lib/bittorrent/data
+SEEDOPTS="--max_upload_rate 350 --display_interval 300"
+SEEDLOG=/var/log/bittorrent/btseed.log
+TRACKPORT=6969
+TRACKDIR=/var/lib/bittorrent/data
+TRACKSTATEFILE=/var/lib/bittorrent/state/bttrack
+TRACKLOG=/var/log/bittorrent/bttrack.log
+TRACKOPTS="--min_time_between_log_flushes 4.0 --show_names 1 --hupmonitor 1"

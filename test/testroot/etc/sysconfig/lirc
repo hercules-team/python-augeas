@@ -1,0 +1,13 @@
+# Note: in addition to these parameters, you need to have working    -*- sh -*-
+# configuration file for lircd (and lircmd if enabled).
+
+# Options to lircd(8).  Typically, at least a remote controller driver
+# ("-H foo") needs to be specified here.  Run "/usr/sbin/lircd -H help" to get
+# a listing of supported drivers.
+LIRCD_OPTIONS=""
+
+# If "yes", the init script will try to start lircmd(8) too.
+ENABLE_LIRCMD="no"
+
+# Options to lircmd(8).
+LIRCMD_OPTIONS=""

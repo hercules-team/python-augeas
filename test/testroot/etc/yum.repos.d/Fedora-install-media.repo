@@ -1,0 +1,7 @@
+[InstallMedia]
+name=Fedora 8
+mediaid=1194015916.783841
+metadata_expire=-1
+gpgcheck=0
+cost=500
+enabled = 0

@@ -1,0 +1,2 @@
+#PANDARGS='--listen --role NAP'
+#PANDARGS='--search --cache --persist'
