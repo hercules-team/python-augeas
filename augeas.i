@@ -73,15 +73,15 @@ http://augeas.net/
 
 %typemap(in, numinputs=0) const char **value (char *tmp) %{
   $1 = &tmp;
-  *$1 = NULL;
+  tmp = NULL;
 %}
 
 %typemap(argout) const char **value {
     if ((result > 0) && (*$1)) {
         Py_XDECREF($result);
         $result = PyString_FromString(*$1);
-        free((char *) *$1);
     } else {
+      	if (*$1) free((char *) *$1);
         Py_XDECREF($result);
         $result = Py_None;
     }
