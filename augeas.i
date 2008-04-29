@@ -115,7 +115,7 @@ class augeas:
                             expensive it is not done by default 
 
         """
-        self.__handler = _augeas.aug_init(root, loadpath, flags)
+        self.__handler = _augeas.aug_init(str(root), str(loadpath), flags)
         if not self.__handler:
             raise ValueError
 
@@ -126,30 +126,30 @@ class augeas:
         associated with the single node matched by PATH.
         See 'exists' on how to tell these cases apart.
         """
-        return _augeas.aug_get(self.__handler, path)
+        return _augeas.aug_get(self.__handler, str(path))
 
-    def set(self, path, value):
+    def set(self, path, val):
         """
-        Set the value associated with PATH to VALUE. VALUE is copied into the
+        Set the value associated with PATH to VAL. VAL is copied into the
         internal data structure. Intermediate entries are created if they don't
         exist. Return True on success, False on error. It is an error if more than one
         node matches PATH.
         """
-        if (_augeas.aug_set(self.__handler, path, value) == 0):
+        if (_augeas.aug_set(self.__handler, str(path), str(val)) == 0):
             return True
         else:
             return False
     
-    def insert(self, path, label, before):
+    def insert(self, path, lbl, before):
         """
-        Create a new sibling LABEL for PATH by inserting into the tree just
+        Create a new sibling LBL for PATH by inserting into the tree just
         before PATH if BEFORE == 1 or just after PATH if BEFORE == 0.
-        PATH must match exactly one existing node in the tree, and LABEL must be
+        PATH must match exactly one existing node in the tree, and LBL must be
         a label, i.e. not contain a '/', '*' or end with a bracketed index
         '[N]'.
         Return True on success, and False if the insertion fails.
         """
-        if (_augeas.aug_insert(self.__handler, path, label, before) == 0):
+        if (_augeas.aug_insert(self.__handler, str(path), str(lbl), int(before)) == 0):
             return True
         else:
             return False
@@ -160,7 +160,7 @@ class augeas:
         All nodes that match PATH, and their descendants, are removed.
 
         """
-        return _augeas.aug_rm(self.__handler, path)
+        return _augeas.aug_rm(self.__handler, str(path))
 
     def match(self, path):
         """
@@ -177,7 +177,7 @@ class augeas:
         label. All matches are done in fixed positions in the tree, and nothing
         matches more than one path segment.
         """
-        return _augeas.aug_match(self.__handler, path)
+        return _augeas.aug_match(self.__handler, str(path))
     
     def save(self):
         """
@@ -202,7 +202,7 @@ class augeas:
         """
         Print each node matching PATH and its descendants to file object OUT
         """
-        return _augeas.aug_print(self.__handler, out, path)
+        return _augeas.aug_print(self.__handler, file(out), str(path))
 
     def __del__(self):
         """
