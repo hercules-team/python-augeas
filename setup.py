@@ -17,7 +17,7 @@ augeas_module = Extension('_augeas',
                           )
 
 setup (name = 'python-augeas',
-       version = '0.0.8',
+       version = '0.1.0',
        author      = "Harald Hoyer",
        author_email = "augeas-devel@redhat.com",
        description = """Python bindings for Augeas""",

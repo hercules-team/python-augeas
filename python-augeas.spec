@@ -2,7 +2,7 @@
 %{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
 Name:           python-augeas
-Version:        0.0.8
+Version:        0.1.0
 Release:        1%{?dist}
 Summary:        Python bindings to augeas
 
@@ -11,6 +11,7 @@ License:        LGPLv2+
 URL:            http://augeas.net/
 Source0:        http://augeas.net/download/python/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Requires: 	augeas-libs
 
 BuildRequires:  python-devel swig augeas-devel
 
@@ -44,5 +45,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Fri May 02 2008 Harald Hoyer <harald@redhat.com> 0.1.0-1
+- new version
+
 * Wed Apr 16 2008 Harald Hoyer <harald@redhat.com> - 0.0.8-1
 - initial version
