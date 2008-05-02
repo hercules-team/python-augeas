@@ -27,6 +27,7 @@ check:
 	make -C test check
 
 srpm: sdist
-	rpmbuild -ts --define "_srcrpmdir ."  dist/python-augeas-$(VERSION).tar.gz
+	cp python-augeas.spec dist
+	rpmbuild -bs --define "_srcrpmdir ."  --define '_sourcedir dist' dist/python-augeas.spec
 
 .PHONY: sdist install build clean check distclean srpm
