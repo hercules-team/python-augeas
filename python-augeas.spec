@@ -11,7 +11,7 @@ License:        LGPLv2+
 URL:            http://augeas.net/
 Source0:        http://augeas.net/download/python/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires: 	augeas-libs
+Requires:       augeas-libs
 
 BuildRequires:  python-devel swig augeas-devel
 
