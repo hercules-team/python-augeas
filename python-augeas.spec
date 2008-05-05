@@ -3,7 +3,7 @@
 
 Name:           python-augeas
 Version:        0.1.0
-Release:        1%{?dist}
+Release:        4%{?dist}
 Summary:        Python bindings to augeas
 
 Group:          Development/Languages
@@ -11,7 +11,7 @@ License:        LGPLv2+
 URL:            http://augeas.net/
 Source0:        http://augeas.net/download/python/%{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires:       augeas-libs
+Requires:       augeas-libs 
 
 BuildRequires:  python-devel swig augeas-devel
 
@@ -39,12 +39,19 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc COPYING AUTHORS README.txt
 # For arch-specific packages: sitearch
-%{python_sitearch}/augeas.py*
-%{python_sitearch}/_augeas.so
-%{python_sitearch}/*.egg-info
-
+%{python_sitearch}/*augeas*
+%attr(0755,root,root) %{python_sitearch}/_augeas.so
 
 %changelog
+* Mon May 05 2008 Harald Hoyer <harald@redhat.com> 0.1.0-4
+- version to import in CVS (rhbz#444945)
+
+* Mon May 05 2008 Harald Hoyer <harald@redhat.com> 0.1.0-3
+- set mode of _augeas.so to 0755
+
+* Mon May 05 2008 Harald Hoyer <harald@redhat.com> 0.1.0-2
+- wildcard to catch egg-info in case it is build
+
 * Fri May 02 2008 Harald Hoyer <harald@redhat.com> 0.1.0-1
 - new version
 
