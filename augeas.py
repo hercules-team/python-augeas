@@ -38,7 +38,7 @@ Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 
 import ctypes
 import ctypes.util
-from sys import version_info as pyver
+from sys import version_info as _pyver
 
 class Augeas(object):
 
@@ -49,7 +49,7 @@ class Augeas(object):
         return lib
 
     # Load libpython (for 'PyFile_AsFile()' and 'PyMem_Free()')
-    _libpython = _dlopen(*["python" + v % pyver[:2] for v in ("%d.%d", "%d%d")])
+    _libpython = _dlopen(*["python" + v % _pyver[:2] for v in ("%d.%d", "%d%d")])
     _libpython.PyFile_AsFile.restype = ctypes.c_void_p
 
     # Load libaugeas
