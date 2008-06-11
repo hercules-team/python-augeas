@@ -1,6 +1,16 @@
-#!/usr/bin/python
+"""Pure python bindings for the augeas library
 
-# augeas.py: pure python bindings for the augeas library
+Augeas is a library for programmatically editing configuration files. 
+Augeas parses configuration files into a tree structure, which it exposes 
+through its public API. Changes made through the API are written back to 
+the initially read files.
+
+The transformation works very hard to preserve comments and formatting
+details. It is controlled by ``lens'' definitions that describe the file
+format and the transformation into a tree.
+
+"""
+
 #
 # Copyright (C) 2008 Nathaniel McCallum
 # Copyright (C) 2008 Jeff Schroeder <jeffschroeder@computer.org>
@@ -20,6 +30,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 #
 # Author: Nathaniel McCallum <nathaniel@natemccallum.com>
+
+__author__ = "Nathaniel McCallum <nathaniel@natemccallum.com>"
+__credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
+Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
+"""
 
 import ctypes
 import ctypes.util
