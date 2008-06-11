@@ -195,7 +195,7 @@ class Augeas(object):
         # Loop through the string array
         matches = []
         for i in range(ret):
-            if ctypes.cast(array[i], ctypes.c_char_p).value:
+            if array[i]:
                 # Create a python string and append it to our matches list
                 matches.append(str(ctypes.cast(array[i], ctypes.c_char_p).value))
 
