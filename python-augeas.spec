@@ -1,19 +1,19 @@
 # sitelib for noarch packages, sitearch for others (remove the unneeded one)
-%{!?python_sitearch: %define python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
-Name:           python-augeas
-Version:        0.1.0
-Release:        4%{?dist}
-Summary:        Python bindings to augeas
+Name:		python-augeas
+Version:	0.2.0
+Release:	1%{?dist}
+Summary:	Python bindings to augeas
+Group:		Development/Languages
+License:	LGPLv2+
+URL:		http://augeas.net/
+Source0:	http://augeas.net/download/python/%{name}-%{version}.tar.gz
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Requires:	augeas-libs 
+BuildArch:	noarch
 
-Group:          Development/Languages
-License:        LGPLv2+
-URL:            http://augeas.net/
-Source0:        http://augeas.net/download/python/%{name}-%{version}.tar.gz
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-Requires:       augeas-libs 
-
-BuildRequires:  python-devel swig augeas-devel
+BuildRequires:	python-setuptools 
 
 %description
 python-augeas is a set of Python bindings around augeas.
@@ -38,11 +38,13 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc COPYING AUTHORS README.txt
-# For arch-specific packages: sitearch
-%{python_sitearch}/*augeas*
-%attr(0755,root,root) %{python_sitearch}/_augeas.so
+%{python_sitelib}/augeas.py*
+%{python_sitelib}/*augeas*.egg-info
 
 %changelog
+* Wed Jun 11 2008 Harald Hoyer <harald@redhat.com> 0.2.0-1
+- switched to noarch, dlopen/ python bindings
+
 * Mon May 05 2008 Harald Hoyer <harald@redhat.com> 0.1.0-4
 - version to import in CVS (rhbz#444945)
 
