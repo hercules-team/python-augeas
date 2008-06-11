@@ -6,16 +6,12 @@ all: build
 
 clean:
 	PREFIX=$(PREFIX) python setup.py clean
-	rm -f augeas.py* _augeas.so augeas_wrap.c 
+	rm -f augeas.py* 
 
 distclean: clean
 	rm -fr build dist MANIFEST
 
 build: augeas.py
-
-augeas.py _augeas.so: augeas.i
-	PREFIX=$(PREFIX) python setup.py build_ext -i
-	PREFIX=$(PREFIX) python setup.py build
 
 install:
 	PREFIX=$(PREFIX) python setup.py install
