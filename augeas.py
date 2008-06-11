@@ -243,3 +243,7 @@ class Augeas(object):
         # Mark the object as closed
         self.__handle = None       
 
+# for backwards compatibility
+class augeas(Augeas):
+	"Compat class, obsolete. Use class Augeas directly."
+
