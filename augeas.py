@@ -229,25 +229,6 @@ class Augeas(object):
         if ret != 0:
             raise IOError, "Unable to save to file!"
 
-    def write(self, path, out=open("/dev/stdout", "w")):
-        """Print each node matching 'path' and its descendants to 'out'."""
-
-        # Sanity checks
-        if type(out) != file:
-            raise TypeError, "out MUST be a file!"
-        if type(path) != str:
-            raise TypeError, "path MUST be a string!"
-        if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
-
-        # Get the underlying FILE *
-        FILE = Augeas._libpython.PyFile_AsFile(ctypes.py_object(out))
-
-        # Call the function
-        ret = Augeas._libaugeas.aug_print(self.__handle, FILE, path)
-        if ret != 0:
-            raise IOError, "Unable to write contents to desired output!"
-
     def close(self):
         """Close this Augeas instance and free any storage associated with it. 
         After this call, this Augeas instance is invalid and can not be used 
