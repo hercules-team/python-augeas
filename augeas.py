@@ -40,16 +40,23 @@ import ctypes
 import ctypes.util
 from sys import version_info as _pyver
 
-class Augeas(object):
+def _dlopen(*args):
+    """Search for one of the libraries given as arguments and load it.
+    Returns the library.
+    """
+    libs = [l for l in [ ctypes.util.find_library(a) for a in args ] if l]
+    lib  = reduce(lambda x, y: x or ctypes.cdll.LoadLibrary(y), libs, None)
+    if not lib: 
+        raise ImportError, "Unable to import lib%s!" % args[0]
+    return lib
 
-    def _dlopen(*args):
-        libs = [l for l in map(ctypes.util.find_library, args) if l]
-        lib  = reduce(lambda x,y: x or ctypes.cdll.LoadLibrary(y), libs, None)
-        if not lib: raise ImportError, "Unable to import lib%s!" % args[0]
-        return lib
+class Augeas(object):
+    "Class wrapper for the augeas library"
 
     # Load libpython (for 'PyFile_AsFile()' and 'PyMem_Free()')
-    _libpython = _dlopen(*["python" + v % _pyver[:2] for v in ("%d.%d", "%d%d")])
+    # pylint: disable-msg=W0142
+    _libpython = _dlopen(*["python" + v % _pyver[:2] 
+                           for v in ("%d.%d", "%d%d")])
     _libpython.PyFile_AsFile.restype = ctypes.c_void_p
 
     # Load libaugeas
@@ -65,12 +72,13 @@ class Augeas(object):
     def __init__(self, root=None, loadpath=None, flags=NONE):
         """Initialize the library.
 
-        Use 'root' as the filesystem root. If 'root' is None, use the value of the
-        environment variable AUGEAS_ROOT. If that doesn't exist either, use "/".
+        Use 'root' as the filesystem root. If 'root' is None, use the value of 
+        the environment variable AUGEAS_ROOT. If that doesn't exist either, 
+        use "/".
 
-        'loadpath' is a colon-spearated list of directories that modules should be
-        searched in. This is in addition to the standard load path and the
-        directories in AUGEAS_LENS_LIB.
+        'loadpath' is a colon-spearated list of directories that modules 
+        should be searched in. This is in addition to the standard load path 
+        and the directories in AUGEAS_LENS_LIB.
 
         'flags' is a bitmask made up of values from AUG_FLAGS."""
 
@@ -91,8 +99,9 @@ class Augeas(object):
         self.close()
 
     def get(self, path):
-        """Lookup the value associated with 'path'.  Returns the value at the 
-        path specified.  It is an error if more than one node matches 'path'."""
+        """Lookup the value associated with 'path'.
+        Returns the value at the path specified.  
+        It is an error if more than one node matches 'path'."""
 
         # Sanity checks
         if type(path) != str:
@@ -104,16 +113,17 @@ class Augeas(object):
         value = ctypes.c_char_p()
 
         # Call the function and pass value by reference (char **)
-        ret = Augeas._libaugeas.aug_get(self.__handle, path, ctypes.byref(value))
+        ret = Augeas._libaugeas.aug_get(self.__handle, path, 
+                                        ctypes.byref(value))
         if ret > 1:
             raise ValueError, "path specified had too many matches!"
 
         return value.value
 
     def set(self, path, value):
-        """Set the value associated with 'path' to 'value'. Intermediate entries
-        are created if they don't exist. It is an error if more than one node
-        matches 'path'."""
+        """Set the value associated with 'path' to 'value'.
+        Intermediate entries are created if they don't exist. 
+        It is an error if more than one node matches 'path'."""
 
         # Sanity checks
         if type(path) != str:
@@ -129,11 +139,13 @@ class Augeas(object):
             raise ValueError, "Unable to set value to path!"
 
     def insert(self, path, label, before=True):
-        """Create a new sibling 'label' for 'path' by inserting into the tree just
-        before 'path' (if 'before' is True) or just after 'path' (if 'before' is False).
+        """Create a new sibling 'label' for 'path' by inserting into the tree 
+        just before 'path' (if 'before' is True) or just after 'path' 
+        (if 'before' is False).
 
-        'path' must match exactly one existing node in the tree, and 'label' must 
-        be a label, i.e. not contain a '/', '*' or end with a bracketed index '[N]'."""
+        'path' must match exactly one existing node in the tree, and 'label' 
+        must be a label, i.e. not contain a '/', '*' or end with a bracketed 
+        index '[N]'."""
 
         # Sanity checks
         if type(path) != str:
@@ -144,13 +156,15 @@ class Augeas(object):
             raise RuntimeError, "The Augeas object has already been closed!"
 
         # Call the function
-        ret = Augeas._libaugeas.aug_insert(self.__handle, path, label, before and 1 or 0)
+        ret = Augeas._libaugeas.aug_insert(self.__handle, path, 
+                                           label, before and 1 or 0)
         if ret != 0:
             raise ValueError, "Unable to insert label!"
 
     def remove(self, path):
-        """Remove 'path' and all its children. Returns the number of entries removed.
-           All nodes that match 'path', and their descendants, are removed."""
+        """Remove 'path' and all its children. Returns the number of entries
+        removed. All nodes that match 'path', and their descendants, are 
+        removed."""
 
         # Sanity checks
         if type(path) != str:
@@ -162,9 +176,9 @@ class Augeas(object):
         return Augeas._libaugeas.aug_rm(self.__handle, path)
 
     def match(self, path):
-        """Return the matches of the path expression 'path'. The returned paths are
-        sufficiently qualified to make sure that they match exactly one node in
-        the current tree.
+        """Return the matches of the path expression 'path'. The returned paths
+        are sufficiently qualified to make sure that they match exactly one 
+        node in the current tree.
 
         Path expressions use a very simple subset of XPath: the path 'path'
         consists of a number of segments, separated by '/'; each segment can
@@ -175,8 +189,7 @@ class Augeas(object):
         matches exactly the Nth node with that label (counting from 1), or the
         special expression 'last()' which matches the last node with the given
         label. All matches are done in fixed positions in the tree, and nothing
-        matches more than one path segment.
-        """
+        matches more than one path segment."""
 
         # Sanity checks
         if type(path) != str:
@@ -184,11 +197,13 @@ class Augeas(object):
         if not self.__handle:
             raise RuntimeError, "The Augeas object has already been closed!"
 
-        # Create a void ** (this is so python won't mangle the char ** when we free it)
+        # Create a void ** (this is so python won't mangle the char **,
+        # when we free it)
         array = ctypes.POINTER(ctypes.c_void_p)()
 
         # Call the function and pass the void ** by reference (void ***)
-        ret = Augeas._libaugeas.aug_match(self.__handle, path, ctypes.byref(array))
+        ret = Augeas._libaugeas.aug_match(self.__handle, path, 
+                                          ctypes.byref(array))
         if ret < 0:
             raise RuntimeError, "Error during match procedure!"
 
@@ -197,7 +212,8 @@ class Augeas(object):
         for i in range(ret):
             if array[i]:
                 # Create a python string and append it to our matches list
-                matches.append(str(ctypes.cast(array[i], ctypes.c_char_p).value))
+                matches.append(str(ctypes.cast(array[i], 
+                                               ctypes.c_char_p).value))
 
                 # Free the string at this point in the array
                 Augeas._libpython.PyMem_Free(array[i])
@@ -212,13 +228,13 @@ class Augeas(object):
         made to them are written.
 
         If SAVE_NEWFILE is set in the creation 'flags', create changed files as
-        new files with the extension ".augnew", and leave the original file unmodified.
+        new files with the extension ".augnew", and leave the original file 
+        unmodified.
 
-        Otherwise, if SAVE_BACKUP is set in the creation 'flags', move the original
-        file to a new file with extension ".augsave".
+        Otherwise, if SAVE_BACKUP is set in the creation 'flags', move the 
+        original file to a new file with extension ".augsave".
 
-        If neither of these flags is set, overwrite the original file.
-        """
+        If neither of these flags is set, overwrite the original file."""
 
         # Sanity checks
         if not self.__handle:
@@ -235,7 +251,8 @@ class Augeas(object):
         for any more operations."""
 
         # If we are already closed, return
-        if not self.__handle: return
+        if not self.__handle:
+            return
 
         # Call the function
         Augeas._libaugeas.aug_close(self.__handle)
@@ -244,6 +261,6 @@ class Augeas(object):
         self.__handle = None       
 
 # for backwards compatibility
+# pylint: disable-msg=C0103
 class augeas(Augeas):
-	"Compat class, obsolete. Use class Augeas directly."
-
+    "Compat class, obsolete. Use class Augeas directly."
