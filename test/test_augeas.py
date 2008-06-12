@@ -4,11 +4,11 @@ import augeas
 
 import os
 
-mydir = os.path.dirname(sys.argv[0])
-if not os.path.isdir(mydir):
-    mydir = os.getcwd()
+__mydir = os.path.dirname(sys.argv[0])
+if not os.path.isdir(__mydir):
+    __mydir = os.getcwd()
 
-myroot = mydir + "/testroot"
+MYROOT = __mydir + "/testroot"
 
 def recurmatch(aug, path):
     if path:
@@ -31,21 +31,23 @@ def recurmatch(aug, path):
 class TestAugeas(unittest.TestCase):
     def test01Get(self):
         "test aug_get"
-        a = augeas.augeas(root=myroot)
+        a = augeas.Augeas(root=MYROOT)
         self.failUnless(a.get("/wrong/path") == None)
+        del a
 
     def test02Match(self):
         "test aug_match"
-        a = augeas.augeas(root=myroot)
+        a = augeas.Augeas(root=MYROOT)
         matches = a.match("/files/etc/hosts/*")
         self.failUnless(matches)
         for i in matches:
-	    for attr in a.match(i+"/*"):
+            for attr in a.match(i+"/*"):
                 self.failUnless(a.get(attr) != None)
+        del a
 
     def test03PrintAll(self):
         "print all tree elements"
-        a = augeas.augeas(root=myroot)
+        a = augeas.Augeas(root=MYROOT)
         path = "/"
         matches = recurmatch(a, path)
         for (p, attr) in matches:
@@ -54,7 +56,7 @@ class TestAugeas(unittest.TestCase):
 
     def test04Grub(self):
         "test default setting of grub entry"
-        a = augeas.augeas(root=myroot)
+        a = augeas.Augeas(root=MYROOT)
         num = 0
         for entry in a.match("/files/etc/grub.conf/title"):
             num += 1
@@ -69,14 +71,14 @@ class TestAugeas(unittest.TestCase):
         a.save()
         
 
-def suite():
+def getsuite():
     suite = unittest.TestSuite()
     suite = unittest.makeSuite(TestAugeas, 'test')
     return suite
 
 if __name__ == "__main__":
-    testRunner = unittest.TextTestRunner(verbosity=2)
-    result = testRunner.run(suite())
-    sys.exit(not result.wasSuccessful())
+    __testRunner = unittest.TextTestRunner(verbosity=2)
+    __result = __testRunner.run(getsuite())
+    sys.exit(not __result.wasSuccessful())
 
 __author__ = "Harald Hoyer <harald@redhat.com>"
