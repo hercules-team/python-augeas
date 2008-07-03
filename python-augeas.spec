@@ -42,6 +42,9 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*augeas*.egg-info
 
 %changelog
+* Thu Jul 03 2008 Harald Hoyer <harald@redhat.com> 0.2.1-1
+- version 0.2.1
+
 * Wed Jun 11 2008 Harald Hoyer <harald@redhat.com> 0.2.0-1
 - switched to noarch, dlopen/ python bindings
 
