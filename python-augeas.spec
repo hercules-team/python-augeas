@@ -13,7 +13,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Requires:	augeas-libs 
 BuildArch:	noarch
 
-BuildRequires:	python-setuptools 
+BuildRequires:	python-setuptools python-devel
 
 %description
 python-augeas is a set of Python bindings around augeas.
