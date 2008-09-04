@@ -138,6 +138,26 @@ class Augeas(object):
         if ret != 0:
             raise ValueError, "Unable to set value to path!"
 
+    def move(self, src, dst):
+        """Move the node 'src' to 'dst'. 'src' must match exactly one node
+           in the tree. 'dst' must either match exactly one node in the
+           tree, or may not exist yet. If 'dst' exists already, it and all
+           its descendants are deleted before moving 'src' there. If 'dst'
+           does not exist yet, it and all its missing ancestors are created."""
+
+        # Sanity checks
+        if type(src) != str:
+            raise TypeError, "src MUST be a string!"
+        if type(dst) != str:
+            raise TypeError, "dst MUST be a string!"
+        if not self.__handle:
+            raise RuntimeError, "The Augeas object has already been closed!"
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_mv(self.__handle, src, dst)
+        if ret != 0:
+            raise ValueError, "Unable to move src to dst!"
+
     def insert(self, path, label, before=True):
         """Create a new sibling 'label' for 'path' by inserting into the tree 
         just before 'path' (if 'before' is True) or just after 'path' 
