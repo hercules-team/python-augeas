@@ -47,7 +47,7 @@ def _dlopen(*args):
     libs = [l for l in [ ctypes.util.find_library(a) for a in args ] if l]
     lib  = reduce(lambda x, y: x or ctypes.cdll.LoadLibrary(y), libs, None)
     if not lib: 
-        raise ImportError, "Unable to import lib%s!" % args[0]
+        raise ImportError("Unable to import lib%s!" % args[0])
     return lib
 
 class Augeas(object):
@@ -84,16 +84,16 @@ class Augeas(object):
 
         # Sanity checks
         if type(root) != str and root != None:
-            raise TypeError, "root MUST be a string or None!"
+            raise TypeError("root MUST be a string or None!")
         if type(loadpath) != str and loadpath != None:
-            raise TypeError, "loadpath MUST be a string or None!"
+            raise TypeError("loadpath MUST be a string or None!")
         if type(flags) != int:
-            raise TypeError, "flag MUST be a flag!"
+            raise TypeError("flag MUST be a flag!")
 
         # Create the Augeas object
         self.__handle = Augeas._libaugeas.aug_init(root, loadpath, flags)
         if not self.__handle:
-            raise RuntimeError, "Unable to create Augeas object!"
+            raise RuntimeError("Unable to create Augeas object!")
 
     def __del__(self):
         self.close()
@@ -105,9 +105,9 @@ class Augeas(object):
 
         # Sanity checks
         if type(path) != str:
-            raise TypeError, "path MUST be a string!"
+            raise TypeError("path MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Create the char * value
         value = ctypes.c_char_p()
@@ -116,7 +116,7 @@ class Augeas(object):
         ret = Augeas._libaugeas.aug_get(self.__handle, path, 
                                         ctypes.byref(value))
         if ret > 1:
-            raise ValueError, "path specified had too many matches!"
+            raise ValueError("path specified had too many matches!")
 
         return value.value
 
@@ -127,16 +127,16 @@ class Augeas(object):
 
         # Sanity checks
         if type(path) != str:
-            raise TypeError, "path MUST be a string!"
+            raise TypeError("path MUST be a string!")
         if type(value) != str:
-            raise TypeError, "value MUST be a string!"
+            raise TypeError("value MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_set(self.__handle, path, value)
         if ret != 0:
-            raise ValueError, "Unable to set value to path!"
+            raise ValueError("Unable to set value to path!")
 
     def move(self, src, dst):
         """Move the node 'src' to 'dst'. 'src' must match exactly one node
@@ -147,16 +147,16 @@ class Augeas(object):
 
         # Sanity checks
         if type(src) != str:
-            raise TypeError, "src MUST be a string!"
+            raise TypeError("src MUST be a string!")
         if type(dst) != str:
-            raise TypeError, "dst MUST be a string!"
+            raise TypeError("dst MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_mv(self.__handle, src, dst)
         if ret != 0:
-            raise ValueError, "Unable to move src to dst!"
+            raise ValueError("Unable to move src to dst!")
 
     def insert(self, path, label, before=True):
         """Create a new sibling 'label' for 'path' by inserting into the tree 
@@ -169,17 +169,17 @@ class Augeas(object):
 
         # Sanity checks
         if type(path) != str:
-            raise TypeError, "path MUST be a string!"
+            raise TypeError("path MUST be a string!")
         if type(label) != str:
-            raise TypeError, "label MUST be a string!"
+            raise TypeError("label MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_insert(self.__handle, path, 
                                            label, before and 1 or 0)
         if ret != 0:
-            raise ValueError, "Unable to insert label!"
+            raise ValueError("Unable to insert label!")
 
     def remove(self, path):
         """Remove 'path' and all its children. Returns the number of entries
@@ -188,9 +188,9 @@ class Augeas(object):
 
         # Sanity checks
         if type(path) != str:
-            raise TypeError, "path MUST be a string!"
+            raise TypeError("path MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         return Augeas._libaugeas.aug_rm(self.__handle, path)
@@ -213,9 +213,9 @@ class Augeas(object):
 
         # Sanity checks
         if type(path) != str:
-            raise TypeError, "path MUST be a string!"
+            raise TypeError("path MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Create a void ** (this is so python won't mangle the char **,
         # when we free it)
@@ -225,7 +225,7 @@ class Augeas(object):
         ret = Augeas._libaugeas.aug_match(self.__handle, path, 
                                           ctypes.byref(array))
         if ret < 0:
-            raise RuntimeError, "Error during match procedure!"
+            raise RuntimeError("Error during match procedure!")
 
         # Loop through the string array
         matches = []
@@ -258,12 +258,12 @@ class Augeas(object):
 
         # Sanity checks
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_save(self.__handle)
         if ret != 0:
-            raise IOError, "Unable to save to file!"
+            raise IOError("Unable to save to file!")
 
     def close(self):
         """Close this Augeas instance and free any storage associated with it. 
