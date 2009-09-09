@@ -83,11 +83,11 @@ class Augeas(object):
         'flags' is a bitmask made up of values from AUG_FLAGS."""
 
         # Sanity checks
-        if type(root) != str and root != None:
+        if not isinstance(root, basestring) and root != None:
             raise TypeError("root MUST be a string or None!")
-        if type(loadpath) != str and loadpath != None:
+        if not isinstance(loadpath, basestring) and loadpath != None:
             raise TypeError("loadpath MUST be a string or None!")
-        if type(flags) != int:
+        if not isinstance(flags, int):
             raise TypeError("flag MUST be a flag!")
 
         # Create the Augeas object
@@ -104,7 +104,7 @@ class Augeas(object):
         It is an error if more than one node matches 'path'."""
 
         # Sanity checks
-        if type(path) != str:
+        if not isinstance(path, basestring):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -126,9 +126,9 @@ class Augeas(object):
         It is an error if more than one node matches 'path'."""
 
         # Sanity checks
-        if type(path) != str:
+        if not isinstance(path, basestring):
             raise TypeError("path MUST be a string!")
-        if type(value) != str:
+        if not isinstance(value, basestring):
             raise TypeError("value MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -146,9 +146,9 @@ class Augeas(object):
            does not exist yet, it and all its missing ancestors are created."""
 
         # Sanity checks
-        if type(src) != str:
+        if not isinstance(src, basestring):
             raise TypeError("src MUST be a string!")
-        if type(dst) != str:
+        if not isinstance(dst, basestring):
             raise TypeError("dst MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -168,9 +168,9 @@ class Augeas(object):
         index '[N]'."""
 
         # Sanity checks
-        if type(path) != str:
+        if not isinstance(path, basestring):
             raise TypeError("path MUST be a string!")
-        if type(label) != str:
+        if not isinstance(label, basestring):
             raise TypeError("label MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -187,7 +187,7 @@ class Augeas(object):
         removed."""
 
         # Sanity checks
-        if type(path) != str:
+        if not isinstance(path, basestring):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -212,7 +212,7 @@ class Augeas(object):
         matches more than one path segment."""
 
         # Sanity checks
-        if type(path) != str:
+        if not isinstance(path, basestring):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
