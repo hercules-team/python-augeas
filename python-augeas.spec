@@ -42,6 +42,12 @@ rm -rf $RPM_BUILD_ROOT
 %{python_sitelib}/*augeas*.egg-info
 
 %changelog
+* Tue Sep 09 2008 Harald Hoyer <harald@redhat.com> 0.3.0-1
+- version 0.3.0
+
+* Thu Jul 03 2008 Harald Hoyer <harald@redhat.com>
+- added python-devel to buildrequires
+
 * Thu Jul 03 2008 Harald Hoyer <harald@redhat.com> 0.2.1-1
 - version 0.2.1
 
