@@ -64,10 +64,14 @@ class Augeas(object):
     _libaugeas.aug_init.restype = ctypes.c_void_p
 
     # Augeas Flags
-    NONE         = (     0)
-    SAVE_BACKUP  = (1 << 0)
-    SAVE_NEWFILE = (1 << 1)
-    TYPE_CHECK   = (1 << 2)
+    NONE = 0
+    SAVE_BACKUP = 1 << 0
+    SAVE_NEWFILE = 1 << 1
+    TYPE_CHECK = 1 << 2
+    NO_STDINC = 1 << 3
+    SAVE_NOOP = 1 << 4
+    NO_LOAD = 1 << 5
+    NO_MODL_AUTOLOAD = 1 << 6
 
     def __init__(self, root=None, loadpath=None, flags=NONE):
         """Initialize the library.
@@ -264,6 +268,66 @@ class Augeas(object):
         ret = Augeas._libaugeas.aug_save(self.__handle)
         if ret != 0:
             raise IOError("Unable to save to file!")
+
+    def load(self):
+        """Load files into the tree. Which files to load and what lenses to use
+        on them is specified under /augeas/load in the tree; each entry
+        /augeas/load/NAME specifies a 'transform', by having itself exactly one
+        child 'lens' and any number of children labelled 'incl' and 'excl'. The
+        value of NAME has no meaning.
+
+        The 'lens' grandchild of /augeas/load specifies which lens to use, and
+        can either be the fully qualified name of a lens 'Module.lens' or
+        '@Module'. The latter form means that the lens from the transform
+        marked for autoloading in MODULE should be used.
+
+        The 'incl' and 'excl' grandchildren of /augeas/load indicate which
+        files to transform. Their value are used as glob patterns. Any file
+        that matches at least one 'incl' pattern and no 'excl' pattern is
+        transformed. The order of 'incl' and 'excl' entries is irrelevant.
+
+        When AUG_INIT is first called, it populates /augeas/load with the
+        transforms marked for autoloading in all the modules it finds.
+
+        Before loading any files, AUG_LOAD will remove everything underneath
+        /augeas/files and /files, regardless of whether any entries have been
+        modified or not."""
+
+        # Sanity checks
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        ret = Augeas._libaugeas.aug_load(self.__handle)
+        if ret != 0:
+            raise RuntimeError("aug_load() failed!")
+
+    def clear_transforms(self):
+        """Clear all transforms beneath /augeas/load. If load() is called right
+        after this, there will be no files beneath /files."""
+        self.remove("/augeas/load/*")
+
+    def add_transform(self, lens, incl, name=None, excl=()):
+        """Add a transform beneath /augeas/load.
+
+        lens: the (file)name of the lens to use
+        incl: one or more glob patterns for the files to transform
+        name: a unique name; use the module name of the lens if omitted
+        excl: zero or more glob patterns of files to exclude from transforming
+        """
+
+        if not name:
+            name = lens.split(".")[0].replace("@", "", 1)
+        if isinstance (incl, basestring):
+            incl = [incl]
+        if isinstance (excl, basestring):
+            excl = [excl]
+
+        xfm = "/augeas/load/%s/" % name
+        self.set (xfm + "lens", lens)
+        for i in range(len(incl)):
+            self.set(xfm + "incl[%d]" % (i+1), incl[i])
+        for i in range(len(excl)):
+            self.set(xfm + "excl[%d]" % (i+1), excl[i])
 
     def close(self):
         """Close this Augeas instance and free any storage associated with it.
