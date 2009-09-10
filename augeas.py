@@ -348,3 +348,9 @@ class Augeas(object):
 # pylint: disable-msg=C0103
 class augeas(Augeas):
     "Compat class, obsolete. Use class Augeas directly."
+
+    def __init__(self, *p, **k):
+        import warnings
+        warnings.warn("use Augeas instead of augeas", DeprecationWarning,
+                stacklevel=2)
+        super(augeas, self).__init__(*p, **k)
