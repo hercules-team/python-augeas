@@ -14,6 +14,7 @@ format and the transformation into a tree.
 #
 # Copyright (C) 2008 Nathaniel McCallum
 # Copyright (C) 2008 Jeff Schroeder <jeffschroeder@computer.org>
+# Copyright (C) 2009 Red Hat, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -34,6 +35,7 @@ format and the transformation into a tree.
 __author__ = "Nathaniel McCallum <nathaniel@natemccallum.com>"
 __credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
 Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
+Nils Philippsen <nils@redhat.com>
 """
 
 import ctypes
