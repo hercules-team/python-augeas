@@ -55,8 +55,8 @@ class Augeas(object):
 
     # Load libpython (for 'PyFile_AsFile()' and 'PyMem_Free()')
     # pylint: disable-msg=W0142
-    _libpython = _dlopen(*["python" + v % _pyver[:2]
-                           for v in ("%d.%d", "%d%d")])
+    _libpython = _dlopen(*["python" + _v % _pyver[:2]
+                           for _v in ("%d.%d", "%d%d")])
     _libpython.PyFile_AsFile.restype = ctypes.c_void_p
 
     # Load libaugeas
