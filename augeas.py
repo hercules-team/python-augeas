@@ -100,6 +100,8 @@ class Augeas(object):
         self.__handle = Augeas._libaugeas.aug_init(root, loadpath, flags)
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
+        # Make sure self.__handle is a void*, not an integer
+        self.__handle = ctypes.c_void_p(self.__handle)
 
     def __del__(self):
         self.close()
@@ -316,7 +318,8 @@ class Augeas(object):
                                                ctypes.c_char_p).value))
 
                 # Free the string at this point in the array
-                Augeas._libpython.PyMem_Free(array[i])
+                # Wrap the string as a void* as it was not allocated by Python
+                Augeas._libpython.PyMem_Free(ctypes.c_void_p(array[i]))
 
         # Free the array itself
         Augeas._libpython.PyMem_Free(array)
