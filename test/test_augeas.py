@@ -71,7 +71,35 @@ class TestAugeas(unittest.TestCase):
         self.failUnless(default == 1)
         a.set("/files/etc/grub.conf/default", str(0))
         a.save()
+
+    def test05Defvar(self):
+        "test defvar"
+        a = augeas.Augeas(root=MYROOT)
+        a.defvar("hosts", "/files/etc/hosts")
+        matches = a.match("$hosts/*")
+        self.failUnless(matches)
+        for i in matches:
+            for attr in a.match(i+"/*"):
+                self.failUnless(a.get(attr) != None)
+        del a
         
+    def test06Defnode(self):
+        "test defnode"
+        a = augeas.Augeas(root=MYROOT)
+        a.defnode("bighost", "/files/etc/hosts/50/ipaddr", "192.168.1.1")
+        value = a.get("$bighost")
+        self.failUnless(value == "192.168.1.1")
+        del a
+
+    def test07Setm(self):
+        "test setm"
+        a = augeas.Augeas(root=MYROOT)
+        matches = a.match("/files/etc/hosts/*/ipaddr")
+        self.failUnless(matches)
+        a.setm("/files/etc/hosts", "*/ipaddr", "192.168.1.1")
+        for i in matches:
+            self.failUnless(a.get(i) == "192.168.1.1")
+        del a
 
 def getsuite():
     suite = unittest.TestSuite()

@@ -144,6 +144,80 @@ class Augeas(object):
         if ret != 0:
             raise ValueError("Unable to set value to path!")
 
+    def setm(self, base, sub, value):
+        """Set the value of multiple nodes in one operation.
+        Find or create a node matching 'sub' by interpreting 'sub'
+        as a path expression relative to each node matching 'base'.
+        'sub' may be None, in which case all the nodes matching
+        'base' will be modified."""
+
+        # Sanity checks
+        if type(base) != str:
+            raise TypeError, "base MUST be a string!"
+        if type(sub) != str and sub != None:
+            raise TypeError, "sub MUST be a string or None!"
+        if type(value) != str:
+            raise TypeError, "value MUST be a string!"
+        if not self.__handle:
+            raise RuntimeError, "The Augeas object has already been closed!"
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_setm(self.__handle, base, sub, value)
+        if ret < 0:
+            raise ValueError, "Unable to set value to path!"
+        return ret
+
+    def defvar(self, name, expr):
+        """Define a variable 'name' whose value is the result of
+        evaluating 'expr'. If a variable 'name' already exists, its
+        name will be replaced with the result of evaluating 'expr'.
+ 
+        If 'expr' is None, the variable 'name' will be removed if it
+        is defined.
+ 
+        Path variables can be used in path expressions later on by
+        prefixing them with '$'."""
+
+        # Sanity checks
+        if type(name) != str:
+            raise TypeError, "name MUST be a string!"
+        if type(expr) != str and expr != None:
+            raise TypeError, "expr MUST be a string or None!"
+        if not self.__handle:
+            raise RuntimeError, "The Augeas object has already been closed!"
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_defvar(self.__handle, name, expr)
+        if ret < 0:
+            raise ValueError, "Unable to register variable!"
+        return ret
+
+    def defnode(self, name, expr, value):
+        """Define a variable 'name' whose value is the result of
+        evaluating 'expr', which must not be None and evaluate to a
+        nodeset. If a variable 'name' already exists, its name will
+        be replaced with the result of evaluating 'expr'.
+ 
+        If 'expr' evaluates to an empty nodeset, a node is created,
+        equivalent to calling set(expr, value) and 'name' will be the
+        nodeset containing that single node."""
+
+        # Sanity checks
+        if type(name) != str:
+            raise TypeError, "name MUST be a string!"
+        if type(expr) != str:
+            raise TypeError, "expr MUST be a string!"
+        if type(value) != str:
+            raise TypeError, "value MUST be a string!"
+        if not self.__handle:
+            raise RuntimeError, "The Augeas object has already been closed!"
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_defnode(self.__handle, name, expr, value, None)
+        if ret < 0:
+            raise ValueError, "Unable to register node!"
+        return ret
+
     def move(self, src, dst):
         """Move the node 'src' to 'dst'. 'src' must match exactly one node
            in the tree. 'dst' must either match exactly one node in the
