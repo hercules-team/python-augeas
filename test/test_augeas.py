@@ -49,12 +49,14 @@ class TestAugeas(unittest.TestCase):
 
     def test03PrintAll(self):
         "print all tree elements"
+        output = open("test03PrintAll.out", "w")
         a = augeas.Augeas(root=MYROOT)
         path = "/"
         matches = recurmatch(a, path)
         for (p, attr) in matches:
-            print >> sys.stderr, p, attr
+            print >> output, p, attr
             self.failUnless(p != None and attr != None)
+        output.close()
 
     def test04Grub(self):
         "test default setting of grub entry"
