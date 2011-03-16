@@ -74,6 +74,7 @@ class Augeas(object):
     SAVE_NOOP = 1 << 4
     NO_LOAD = 1 << 5
     NO_MODL_AUTOLOAD = 1 << 6
+    ENABLE_SPAN = 1 << 7
 
     def __init__(self, root=None, loadpath=None, flags=NONE):
         """Initialize the library.
@@ -325,6 +326,40 @@ class Augeas(object):
         Augeas._libpython.PyMem_Free(array)
 
         return matches
+
+    def span(self, path):
+        """Get the span according to input file of the node associated with
+        PATH. If the node is associated with a file, un tuple of 5 elements is
+        returned: (filename, label_start, label_end, value_start, value_end,
+        span_start, span_end). If the node associated with PATH doesn't
+        belong to a file or is doesn't exists, ValueError is raised."""
+
+        # Sanity checks
+        if not isinstance(path, basestring):
+            raise TypeError("path MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        filename = ctypes.c_char_p()
+        label_start = ctypes.c_uint()
+        label_end = ctypes.c_uint()
+        value_start = ctypes.c_uint()
+        value_end = ctypes.c_uint()
+        span_start = ctypes.c_uint()
+        span_end = ctypes.c_uint()
+
+        r = ctypes.byref
+
+        ret = Augeas._libaugeas.aug_span(self.__handle, path, r(filename),
+                                         r(label_start), r(label_end),
+                                         r(value_start), r(value_end),
+                                         r(span_start), r(span_end))
+        if (ret < 0):
+            raise ValueError("Error during span procedure")
+
+        return (filename.value, label_start.value, label_end.value,
+                value_start.value, value_end.value,
+                span_start.value, span_end.value)
 
     def save(self):
         """Write all pending changes to disk. Only files that had any changes
