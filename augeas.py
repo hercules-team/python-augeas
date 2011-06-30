@@ -38,6 +38,7 @@ Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 Nils Philippsen <nils@redhat.com>
 """
 
+import types
 import ctypes
 import ctypes.util
 from sys import version_info as _pyver
@@ -137,8 +138,8 @@ class Augeas(object):
         # Sanity checks
         if not isinstance(path, basestring):
             raise TypeError("path MUST be a string!")
-        if not isinstance(value, basestring):
-            raise TypeError("value MUST be a string!")
+        if not isinstance(value, basestring) and type(value) != types.NoneType:
+            raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
