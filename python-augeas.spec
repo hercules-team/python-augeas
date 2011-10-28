@@ -1,8 +1,12 @@
 # sitelib for noarch packages, sitearch for others (remove the unneeded one)
 %{!?python_sitelib: %define python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
+%if ! 0%{?fedora}%{?rhel} || 0%{?fedora} >= 9 || 0%{?rhel} >= 6
+bcond_without egg
+%endif
+
 Name:		python-augeas
-Version:	0.3.0
+Version:	0.4.0
 Release:	1%{?dist}
 Summary:	Python bindings to augeas
 Group:		Development/Languages
@@ -39,9 +43,15 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc COPYING AUTHORS README.txt
 %{python_sitelib}/augeas.py*
+%if %{with egg}
 %{python_sitelib}/*augeas*.egg-info
+%endif
 
 %changelog
+* Fri Oct 28 2011 Nils Philippsen <nils@redhat.com> 0.4.0-1
+- version 0.4.0
+- include egg only on F-9, RHEL-6 and later
+
 * Tue Sep 09 2008 Harald Hoyer <harald@redhat.com> 0.3.0-1
 - version 0.3.0
 
