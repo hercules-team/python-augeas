@@ -6,7 +6,7 @@ bcond_without egg
 %endif
 
 Name:		python-augeas
-Version:	0.4.0
+Version:	0.4.1
 Release:	1%{?dist}
 Summary:	Python bindings to augeas
 Group:		Development/Languages
@@ -48,8 +48,8 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 
 %changelog
-* Fri Oct 28 2011 Nils Philippsen <nils@redhat.com> 0.4.0-1
-- version 0.4.0
+* Fri Oct 28 2011 Nils Philippsen <nils@redhat.com> 0.4.1-1
+- version 0.4.1
 - include egg only on F-9, RHEL-6 and later
 
 * Tue Sep 09 2008 Harald Hoyer <harald@redhat.com> 0.3.0-1
