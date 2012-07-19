@@ -11,4 +11,7 @@ install:
   - sudo add-apt-repository -y ppa:raphink/augeas
   - sudo apt-get update
   - sudo apt-get install libaugeas-dev libxml2-dev
+matrix:
+  allow_failures:
+    - python: 3.2
 script: make && make check
