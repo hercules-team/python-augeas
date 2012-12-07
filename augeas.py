@@ -192,6 +192,28 @@ class Augeas(object):
             raise ValueError("Unable to store text at node!")
         return ret
 
+    def text_retrieve(self, lens, node_in, path, node_out):
+        """Transform the tree at 'path' into a string using lens 'lens' and store it in
+        the node 'node_out', assuming the tree was initially generated using the
+        value of node 'node_in'. 'path', 'node_in', and 'node_out' are path expressions."""
+
+        # Sanity checks
+        if not isinstance(lens, basestring):
+            raise TypeError("lens MUST be a string!")
+        if not isinstance(node_in, basestring):
+            raise TypeError("node_in MUST be a string!")
+        if not isinstance(path, basestring):
+            raise TypeError("path MUST be a string!")
+        if not isinstance(node_out, basestring):
+            raise TypeError("node_out MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_text_retrieve(self.__handle, lens, node_in, path, node_out)
+        if ret != 0:
+            raise ValueError("Unable to store text at node!")
+        return ret
 
     def defvar(self, name, expr):
         """Define a variable 'name' whose value is the result of

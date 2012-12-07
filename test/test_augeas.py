@@ -156,6 +156,22 @@ class TestAugeas(unittest.TestCase):
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
+    def test10TextRetrieve(self):
+        hosts = "192.168.0.1 rtr.example.com router\n"
+        a = augeas.Augeas(root=MYROOT)
+        r = a.set("/raw/hosts", hosts);
+        r = a.text_store("Hosts.lns", "/raw/hosts", "/t1")
+        r = a.text_retrieve("Hosts.lns", "/raw/hosts", "/t1", "/out/hosts")
+        hosts_out = a.get("/out/hosts")
+        self.assertEqual(hosts, hosts_out)
+
+        # Test bad lens name
+        try:
+            r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
+        except ValueError, e:
+            error = e
+        self.assertTrue(isinstance(e, ValueError))
+
 def getsuite():
     suite = unittest.TestSuite()
     suite = unittest.makeSuite(TestAugeas, 'test')
