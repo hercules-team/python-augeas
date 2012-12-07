@@ -171,6 +171,28 @@ class Augeas(object):
             raise ValueError, "Unable to set value to path!"
         return ret
 
+    def text_store(self, lens, node, path):
+        """Use the value of node 'node' as a string and transform it into a tree
+        using the lens 'lens' and store it in the tree at 'path', which will be
+        overwritten. 'path' and 'node' are path expressions."""
+
+        # Sanity checks
+        if not isinstance(lens, basestring):
+            raise TypeError("lens MUST be a string!")
+        if not isinstance(node, basestring):
+            raise TypeError("node MUST be a string!")
+        if not isinstance(path, basestring):
+            raise TypeError("path MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_text_store(self.__handle, lens, node, path)
+        if ret != 0:
+            raise ValueError("Unable to store text at node!")
+        return ret
+
+
     def defvar(self, name, expr):
         """Define a variable 'name' whose value is the result of
         evaluating 'expr'. If a variable 'name' already exists, its
