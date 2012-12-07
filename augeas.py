@@ -286,6 +286,23 @@ class Augeas(object):
         if ret != 0:
             raise ValueError("Unable to move src to dst!")
 
+    def rename(self, src, dst):
+        """Rename the label of all nodes matching 'src' to 'lbl'."""
+
+        # Sanity checks
+        if not isinstance(src, basestring):
+            raise TypeError("src MUST be a string!")
+        if not isinstance(dst, basestring):
+            raise TypeError("dst MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_rename(self.__handle, src, dst)
+        if ret < 0:
+            raise ValueError("Unable to rename src as dst!")
+        return ret
+
     def insert(self, path, label, before=True):
         """Create a new sibling 'label' for 'path' by inserting into the tree
         just before 'path' (if 'before' is True) or just after 'path'

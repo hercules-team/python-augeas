@@ -172,6 +172,20 @@ class TestAugeas(unittest.TestCase):
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
+    def test11Rename(self):
+        a = augeas.Augeas(root=MYROOT)
+        r = a.set("/a/b/c", "value");
+        r = a.rename("/a/b/c", "d");
+        self.assertEqual(r, 1)
+        r = a.set("/a/e/d", "value2");
+        r = a.rename("/a//d", "x");
+        self.assertEqual(r, 2)
+        try:
+            r = a.rename("/a/e/x", "a/b");
+        except ValueError, e:
+            error = e
+        self.assertTrue(isinstance(e, ValueError))
+
 def getsuite():
     suite = unittest.TestSuite()
     suite = unittest.makeSuite(TestAugeas, 'test')
