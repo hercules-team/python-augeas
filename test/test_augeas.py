@@ -210,7 +210,11 @@ class TestAugeas(unittest.TestCase):
         excl = a.get("/augeas/load/Foo/excl")
         self.assertEqual(excl, "/tmp/baz")
 
+    def test14Label(self):
+        a = augeas.Augeas(root=MYROOT)
 
+        lbl = a.label("/augeas/version")
+        self.assertEqual(lbl, "version")
 
 def getsuite():
     suite = unittest.TestSuite()

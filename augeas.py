@@ -130,6 +130,28 @@ class Augeas(object):
 
         return value.value
 
+    def label(self, path):
+        """Lookup the label associated with 'path'.
+        Returns the label of the path specified.
+        It is an error if more than one node matches 'path'."""
+
+        # Sanity checks
+        if not isinstance(path, basestring):
+            raise TypeError("path MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Create the char * value
+        label = ctypes.c_char_p()
+
+        # Call the function and pass value by reference (char **)
+        ret = Augeas._libaugeas.aug_label(self.__handle, path,
+                                          ctypes.byref(label))
+        if ret > 1:
+            raise ValueError("path specified had too many matches!")
+
+        return label.value
+
     def set(self, path, value):
         """Set the value associated with 'path' to 'value'.
         Intermediate entries are created if they don't exist.
