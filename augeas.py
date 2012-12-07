@@ -487,23 +487,44 @@ class Augeas(object):
 
         lens: the (file)name of the lens to use
         incl: one or more glob patterns for the files to transform
-        name: a unique name; use the module name of the lens if omitted
+        name: deprecated parameter
         excl: zero or more glob patterns of files to exclude from transforming
         """
 
-        if not name:
-            name = lens.split(".")[0].replace("@", "", 1)
+        if name:
+            import warnings
+            warnings.warn("name is now deprecated in this function", DeprecationWarning,
+                          stacklevel=2)
         if isinstance (incl, basestring):
             incl = [incl]
         if isinstance (excl, basestring):
             excl = [excl]
 
-        xfm = "/augeas/load/%s/" % name
-        self.set (xfm + "lens", lens)
         for i in range(len(incl)):
-            self.set(xfm + "incl[%d]" % (i+1), incl[i])
+            self.transform(lens, incl[i], False)
         for i in range(len(excl)):
-            self.set(xfm + "excl[%d]" % (i+1), excl[i])
+            self.transform(lens, excl[i], True)
+
+    def transform(self, lens, file, excl=False):
+        """Add a transform for 'file' using 'lens'.
+        'excl' specifies if this the file is to be included (False)
+        or excluded (True) from the 'lens'.
+        The 'lens' may be a module name or a full lens name.
+        If a module name is given, then lns will be the lens assumed.
+        """
+
+        if not isinstance(lens, basestring):
+            raise TypeError("lens MUST be a string!")
+        if not isinstance(file, basestring):
+            raise TypeError("file MUST be a string!")
+        if not isinstance(excl, bool):
+            raise TypeError("excl MUST be a boolean!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        ret = Augeas._libaugeas.aug_transform(self.__handle, lens, file, excl)
+        if ret != 0:
+            raise RuntimeError("Unable to add transform!")
 
     def close(self):
         """Close this Augeas instance and free any storage associated with it.

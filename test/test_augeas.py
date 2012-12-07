@@ -186,6 +186,32 @@ class TestAugeas(unittest.TestCase):
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
+    def test12Transform(self):
+        a = augeas.Augeas(root=MYROOT)
+
+        r = a.transform("Foo", "/tmp/bar")
+        lens = a.get("/augeas/load/Foo/lens")
+        self.assertEqual(lens, "Foo.lns")
+        incl = a.get("/augeas/load/Foo/incl")
+        self.assertEqual(incl, "/tmp/bar")
+
+        r = a.transform("Foo", "/tmp/baz", True)
+        excl = a.get("/augeas/load/Foo/excl")
+        self.assertEqual(excl, "/tmp/baz")
+
+    def test13AddTransform(self):
+        a = augeas.Augeas(root=MYROOT)
+
+        r = a.add_transform("Foo", "/tmp/bar")
+        incl = a.get("/augeas/load/Foo/incl")
+        self.assertEqual(incl, "/tmp/bar")
+
+        r = a.add_transform("Foo", "/tmp/bar", "Faz", "/tmp/baz")
+        excl = a.get("/augeas/load/Foo/excl")
+        self.assertEqual(excl, "/tmp/baz")
+
+
+
 def getsuite():
     suite = unittest.TestSuite()
     suite = unittest.makeSuite(TestAugeas, 'test')
