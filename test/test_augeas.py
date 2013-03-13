@@ -25,7 +25,7 @@ def recurmatch(aug, path):
         if path != "/":
             aug.match(path)
         for i in m:
-            for x in recurmatch(aug, i):                
+            for x in recurmatch(aug, i):
                 yield x
         else:
             for i in aug.match(path + "/*"):
@@ -66,13 +66,13 @@ class TestAugeas(unittest.TestCase):
         num = 0
         for entry in a.match("/files/etc/grub.conf/title"):
             num += 1
-        self.failUnless(num == 2)
+        self.assertEqual(num, 2)
         default = int(a.get("/files/etc/grub.conf/default"))
-        self.failUnless(default == 0)
+        self.assertEqual(default, 0)
         a.set("/files/etc/grub.conf/default", str(1))
         a.save()
         default = int(a.get("/files/etc/grub.conf/default"))
-        self.failUnless(default == 1)
+        self.assertEqual(default, 1)
         a.set("/files/etc/grub.conf/default", str(0))
         a.save()
 
@@ -92,7 +92,7 @@ class TestAugeas(unittest.TestCase):
         a = augeas.Augeas(root=MYROOT)
         a.defnode("bighost", "/files/etc/hosts/50/ipaddr", "192.168.1.1")
         value = a.get("$bighost")
-        self.failUnless(value == "192.168.1.1")
+        self.assertEqual(value, "192.168.1.1")
         del a
 
     def test07Setm(self):
@@ -102,7 +102,7 @@ class TestAugeas(unittest.TestCase):
         self.failUnless(matches)
         a.setm("/files/etc/hosts", "*/ipaddr", "192.168.1.1")
         for i in matches:
-            self.failUnless(a.get(i) == "192.168.1.1")
+            self.assertEqual(a.get(i), "192.168.1.1")
         del a
 
     def test08Span(self):
