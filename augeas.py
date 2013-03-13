@@ -42,6 +42,17 @@ import types
 import ctypes
 import ctypes.util
 from sys import version_info as _pyver
+from functools import reduce
+
+
+PY3 = _pyver >= (3,)
+
+
+if PY3:
+    string_types = str
+else:
+    string_types = basestring
+
 
 def _dlopen(*args):
     """Search for one of the libraries given as arguments and load it.
@@ -91,9 +102,9 @@ class Augeas(object):
         'flags' is a bitmask made up of values from AUG_FLAGS."""
 
         # Sanity checks
-        if not isinstance(root, basestring) and root != None:
+        if not isinstance(root, string_types) and root != None:
             raise TypeError("root MUST be a string or None!")
-        if not isinstance(loadpath, basestring) and loadpath != None:
+        if not isinstance(loadpath, string_types) and loadpath != None:
             raise TypeError("loadpath MUST be a string or None!")
         if not isinstance(flags, int):
             raise TypeError("flag MUST be a flag!")
@@ -114,7 +125,7 @@ class Augeas(object):
         It is an error if more than one node matches 'path'."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -136,7 +147,7 @@ class Augeas(object):
         It is an error if more than one node matches 'path'."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -158,9 +169,9 @@ class Augeas(object):
         It is an error if more than one node matches 'path'."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
-        if not isinstance(value, basestring) and type(value) != types.NoneType:
+        if not isinstance(value, string_types) and type(value) != type(None):
             raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -179,18 +190,18 @@ class Augeas(object):
 
         # Sanity checks
         if type(base) != str:
-            raise TypeError, "base MUST be a string!"
+            raise TypeError("base MUST be a string!")
         if type(sub) != str and sub != None:
-            raise TypeError, "sub MUST be a string or None!"
+            raise TypeError("sub MUST be a string or None!")
         if type(value) != str:
-            raise TypeError, "value MUST be a string!"
+            raise TypeError("value MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_setm(self.__handle, base, sub, value)
         if ret < 0:
-            raise ValueError, "Unable to set value to path!"
+            raise ValueError("Unable to set value to path!")
         return ret
 
     def text_store(self, lens, node, path):
@@ -199,11 +210,11 @@ class Augeas(object):
         overwritten. 'path' and 'node' are path expressions."""
 
         # Sanity checks
-        if not isinstance(lens, basestring):
+        if not isinstance(lens, string_types):
             raise TypeError("lens MUST be a string!")
-        if not isinstance(node, basestring):
+        if not isinstance(node, string_types):
             raise TypeError("node MUST be a string!")
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -220,13 +231,13 @@ class Augeas(object):
         value of node 'node_in'. 'path', 'node_in', and 'node_out' are path expressions."""
 
         # Sanity checks
-        if not isinstance(lens, basestring):
+        if not isinstance(lens, string_types):
             raise TypeError("lens MUST be a string!")
-        if not isinstance(node_in, basestring):
+        if not isinstance(node_in, string_types):
             raise TypeError("node_in MUST be a string!")
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
-        if not isinstance(node_out, basestring):
+        if not isinstance(node_out, string_types):
             raise TypeError("node_out MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -250,16 +261,16 @@ class Augeas(object):
 
         # Sanity checks
         if type(name) != str:
-            raise TypeError, "name MUST be a string!"
+            raise TypeError("name MUST be a string!")
         if type(expr) != str and expr != None:
-            raise TypeError, "expr MUST be a string or None!"
+            raise TypeError("expr MUST be a string or None!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_defvar(self.__handle, name, expr)
         if ret < 0:
-            raise ValueError, "Unable to register variable!"
+            raise ValueError("Unable to register variable!")
         return ret
 
     def defnode(self, name, expr, value):
@@ -274,18 +285,18 @@ class Augeas(object):
 
         # Sanity checks
         if type(name) != str:
-            raise TypeError, "name MUST be a string!"
+            raise TypeError("name MUST be a string!")
         if type(expr) != str:
-            raise TypeError, "expr MUST be a string!"
+            raise TypeError("expr MUST be a string!")
         if type(value) != str:
-            raise TypeError, "value MUST be a string!"
+            raise TypeError("value MUST be a string!")
         if not self.__handle:
-            raise RuntimeError, "The Augeas object has already been closed!"
+            raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
         ret = Augeas._libaugeas.aug_defnode(self.__handle, name, expr, value, None)
         if ret < 0:
-            raise ValueError, "Unable to register node!"
+            raise ValueError("Unable to register node!")
         return ret
 
     def move(self, src, dst):
@@ -296,9 +307,9 @@ class Augeas(object):
            does not exist yet, it and all its missing ancestors are created."""
 
         # Sanity checks
-        if not isinstance(src, basestring):
+        if not isinstance(src, string_types):
             raise TypeError("src MUST be a string!")
-        if not isinstance(dst, basestring):
+        if not isinstance(dst, string_types):
             raise TypeError("dst MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -312,9 +323,9 @@ class Augeas(object):
         """Rename the label of all nodes matching 'src' to 'lbl'."""
 
         # Sanity checks
-        if not isinstance(src, basestring):
+        if not isinstance(src, string_types):
             raise TypeError("src MUST be a string!")
-        if not isinstance(dst, basestring):
+        if not isinstance(dst, string_types):
             raise TypeError("dst MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -335,9 +346,9 @@ class Augeas(object):
         index '[N]'."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
-        if not isinstance(label, basestring):
+        if not isinstance(label, string_types):
             raise TypeError("label MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -354,7 +365,7 @@ class Augeas(object):
         removed."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -379,7 +390,7 @@ class Augeas(object):
         matches more than one path segment."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -419,7 +430,7 @@ class Augeas(object):
         belong to a file or is doesn't exists, ValueError is raised."""
 
         # Sanity checks
-        if not isinstance(path, basestring):
+        if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -517,9 +528,9 @@ class Augeas(object):
             import warnings
             warnings.warn("name is now deprecated in this function", DeprecationWarning,
                           stacklevel=2)
-        if isinstance (incl, basestring):
+        if isinstance (incl, string_types):
             incl = [incl]
-        if isinstance (excl, basestring):
+        if isinstance (excl, string_types):
             excl = [excl]
 
         for i in range(len(incl)):
@@ -535,9 +546,9 @@ class Augeas(object):
         If a module name is given, then lns will be the lens assumed.
         """
 
-        if not isinstance(lens, basestring):
+        if not isinstance(lens, string_types):
             raise TypeError("lens MUST be a string!")
-        if not isinstance(file, basestring):
+        if not isinstance(file, string_types):
             raise TypeError("file MUST be a string!")
         if not isinstance(excl, bool):
             raise TypeError("excl MUST be a boolean!")
