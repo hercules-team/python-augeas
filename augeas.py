@@ -46,12 +46,23 @@ from functools import reduce
 
 
 PY3 = _pyver >= (3,)
+AUGENC = 'utf8'
 
 
 if PY3:
     string_types = str
 else:
     string_types = basestring
+
+
+def enc(st):
+    if st:
+        return st.encode(AUGENC)
+
+
+def dec(st):
+    if st:
+        return st.decode(AUGENC)
 
 
 def _dlopen(*args):
@@ -104,7 +115,7 @@ class Augeas(object):
             raise TypeError("flag MUST be a flag!")
 
         # Create the Augeas object
-        self.__handle = Augeas._libaugeas.aug_init(root, loadpath, flags)
+        self.__handle = Augeas._libaugeas.aug_init(enc(root), enc(loadpath), flags)
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
         # Make sure self.__handle is a void*, not an integer
@@ -128,12 +139,12 @@ class Augeas(object):
         value = ctypes.c_char_p()
 
         # Call the function and pass value by reference (char **)
-        ret = Augeas._libaugeas.aug_get(self.__handle, path,
+        ret = Augeas._libaugeas.aug_get(self.__handle, enc(path),
                                         ctypes.byref(value))
         if ret > 1:
             raise ValueError("path specified had too many matches!")
 
-        return value.value
+        return dec(value.value)
 
     def label(self, path):
         """Lookup the label associated with 'path'.
@@ -150,12 +161,12 @@ class Augeas(object):
         label = ctypes.c_char_p()
 
         # Call the function and pass value by reference (char **)
-        ret = Augeas._libaugeas.aug_label(self.__handle, path,
+        ret = Augeas._libaugeas.aug_label(self.__handle, enc(path),
                                           ctypes.byref(label))
         if ret > 1:
             raise ValueError("path specified had too many matches!")
 
-        return label.value
+        return dec(label.value)
 
     def set(self, path, value):
         """Set the value associated with 'path' to 'value'.
@@ -171,7 +182,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_set(self.__handle, path, value)
+        ret = Augeas._libaugeas.aug_set(self.__handle, enc(path), enc(value))
         if ret != 0:
             raise ValueError("Unable to set value to path!")
 
@@ -193,7 +204,8 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_setm(self.__handle, base, sub, value)
+        ret = Augeas._libaugeas.aug_setm(
+            self.__handle, enc(base), enc(sub), enc(value))
         if ret < 0:
             raise ValueError("Unable to set value to path!")
         return ret
@@ -214,7 +226,8 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_text_store(self.__handle, lens, node, path)
+        ret = Augeas._libaugeas.aug_text_store(
+            self.__handle, enc(lens), enc(node), enc(path))
         if ret != 0:
             raise ValueError("Unable to store text at node!")
         return ret
@@ -237,7 +250,8 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_text_retrieve(self.__handle, lens, node_in, path, node_out)
+        ret = Augeas._libaugeas.aug_text_retrieve(
+            self.__handle, enc(lens), enc(node_in), enc(path), enc(node_out))
         if ret != 0:
             raise ValueError("Unable to store text at node!")
         return ret
@@ -262,7 +276,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_defvar(self.__handle, name, expr)
+        ret = Augeas._libaugeas.aug_defvar(self.__handle, enc(name), enc(expr))
         if ret < 0:
             raise ValueError("Unable to register variable!")
         return ret
@@ -288,7 +302,8 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_defnode(self.__handle, name, expr, value, None)
+        ret = Augeas._libaugeas.aug_defnode(
+            self.__handle, enc(name), enc(expr), enc(value), None)
         if ret < 0:
             raise ValueError("Unable to register node!")
         return ret
@@ -309,7 +324,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_mv(self.__handle, src, dst)
+        ret = Augeas._libaugeas.aug_mv(self.__handle, enc(src), enc(dst))
         if ret != 0:
             raise ValueError("Unable to move src to dst!")
 
@@ -325,7 +340,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_rename(self.__handle, src, dst)
+        ret = Augeas._libaugeas.aug_rename(self.__handle, enc(src), enc(dst))
         if ret < 0:
             raise ValueError("Unable to rename src as dst!")
         return ret
@@ -348,8 +363,8 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_insert(self.__handle, path,
-                                           label, before and 1 or 0)
+        ret = Augeas._libaugeas.aug_insert(self.__handle, enc(path),
+                                           enc(label), before and 1 or 0)
         if ret != 0:
             raise ValueError("Unable to insert label!")
 
@@ -365,7 +380,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        return Augeas._libaugeas.aug_rm(self.__handle, path)
+        return Augeas._libaugeas.aug_rm(self.__handle, enc(path))
 
     def match(self, path):
         """Return the matches of the path expression 'path'. The returned paths
@@ -394,7 +409,7 @@ class Augeas(object):
         array = ctypes.POINTER(ctypes.c_void_p)()
 
         # Call the function and pass the void ** by reference (void ***)
-        ret = Augeas._libaugeas.aug_match(self.__handle, path,
+        ret = Augeas._libaugeas.aug_match(self.__handle, enc(path),
                                           ctypes.byref(array))
         if ret < 0:
             raise RuntimeError("Error during match procedure!", path)
@@ -404,7 +419,7 @@ class Augeas(object):
         for i in range(ret):
             if array[i]:
                 # Create a python string and append it to our matches list
-                matches.append(str(ctypes.cast(array[i],
+                matches.append(dec(ctypes.cast(array[i],
                                                ctypes.c_char_p).value))
 
                 # Free the string at this point in the array
@@ -439,14 +454,14 @@ class Augeas(object):
 
         r = ctypes.byref
 
-        ret = Augeas._libaugeas.aug_span(self.__handle, path, r(filename),
+        ret = Augeas._libaugeas.aug_span(self.__handle, enc(path), r(filename),
                                          r(label_start), r(label_end),
                                          r(value_start), r(value_end),
                                          r(span_start), r(span_end))
         if (ret < 0):
             raise ValueError("Error during span procedure")
 
-        return (filename.value, label_start.value, label_end.value,
+        return (dec(filename.value), label_start.value, label_end.value,
                 value_start.value, value_end.value,
                 span_start.value, span_end.value)
 
@@ -549,7 +564,7 @@ class Augeas(object):
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
-        ret = Augeas._libaugeas.aug_transform(self.__handle, lens, file, excl)
+        ret = Augeas._libaugeas.aug_transform(self.__handle, enc(lens), enc(file), excl)
         if ret != 0:
             raise RuntimeError("Unable to add transform!")
 
