@@ -67,12 +67,6 @@ def _dlopen(*args):
 class Augeas(object):
     "Class wrapper for the augeas library"
 
-    # Load libpython (for 'PyFile_AsFile()' and 'PyMem_Free()')
-    # pylint: disable-msg=W0142
-    _libpython = _dlopen(*["python" + _v % _pyver[:2]
-                           for _v in ("%d.%d", "%d%d")])
-    _libpython.PyFile_AsFile.restype = ctypes.c_void_p
-
     # Load libaugeas
     _libaugeas = _dlopen("augeas")
     _libaugeas.aug_init.restype = ctypes.c_void_p
@@ -415,10 +409,10 @@ class Augeas(object):
 
                 # Free the string at this point in the array
                 # Wrap the string as a void* as it was not allocated by Python
-                Augeas._libpython.PyMem_Free(ctypes.c_void_p(array[i]))
+                ctypes.pythonapi.PyMem_Free(ctypes.c_void_p(array[i]))
 
         # Free the array itself
-        Augeas._libpython.PyMem_Free(array)
+        ctypes.pythonapi.PyMem_Free(array)
 
         return matches
 
