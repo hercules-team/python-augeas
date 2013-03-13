@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import unittest
 import sys
 import os
@@ -54,7 +56,7 @@ class TestAugeas(unittest.TestCase):
         path = "/"
         matches = recurmatch(a, path)
         for (p, attr) in matches:
-            print >> output, p, attr
+            print(p, attr, file=output)
             self.failUnless(p != None and attr != None)
         output.close()
 
@@ -130,14 +132,14 @@ class TestAugeas(unittest.TestCase):
         error = None
         try:
             r = a.span("/files")
-        except ValueError, e:
+        except ValueError as e:
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
         error = None
         try:
             r = a.span("/random")
-        except ValueError, e:
+        except ValueError as e:
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
@@ -152,7 +154,7 @@ class TestAugeas(unittest.TestCase):
         # Test bad lens name
         try:
             r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
-        except ValueError, e:
+        except ValueError as e:
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
@@ -168,7 +170,7 @@ class TestAugeas(unittest.TestCase):
         # Test bad lens name
         try:
             r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
-        except ValueError, e:
+        except ValueError as e:
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
@@ -182,7 +184,7 @@ class TestAugeas(unittest.TestCase):
         self.assertEqual(r, 2)
         try:
             r = a.rename("/a/e/x", "a/b");
-        except ValueError, e:
+        except ValueError as e:
             error = e
         self.assertTrue(isinstance(e, ValueError))
 
