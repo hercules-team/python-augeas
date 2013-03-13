@@ -397,7 +397,7 @@ class Augeas(object):
         ret = Augeas._libaugeas.aug_match(self.__handle, path,
                                           ctypes.byref(array))
         if ret < 0:
-            raise RuntimeError("Error during match procedure!")
+            raise RuntimeError("Error during match procedure!", path)
 
         # Loop through the string array
         matches = []
