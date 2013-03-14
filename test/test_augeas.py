@@ -134,14 +134,14 @@ class TestAugeas(unittest.TestCase):
             r = a.span("/files")
         except ValueError as e:
             error = e
-        self.assertTrue(isinstance(e, ValueError))
+        self.assertTrue(isinstance(error, ValueError))
 
         error = None
         try:
             r = a.span("/random")
         except ValueError as e:
             error = e
-        self.assertTrue(isinstance(e, ValueError))
+        self.assertTrue(isinstance(error, ValueError))
 
         del a
 
@@ -156,7 +156,7 @@ class TestAugeas(unittest.TestCase):
             r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
         except ValueError as e:
             error = e
-        self.assertTrue(isinstance(e, ValueError))
+        self.assertTrue(isinstance(error, ValueError))
 
     def test10TextRetrieve(self):
         hosts = "192.168.0.1 rtr.example.com router\n"
@@ -172,7 +172,7 @@ class TestAugeas(unittest.TestCase):
             r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
         except ValueError as e:
             error = e
-        self.assertTrue(isinstance(e, ValueError))
+        self.assertTrue(isinstance(error, ValueError))
 
     def test11Rename(self):
         a = augeas.Augeas(root=MYROOT)
@@ -186,7 +186,7 @@ class TestAugeas(unittest.TestCase):
             r = a.rename("/a/e/x", "a/b");
         except ValueError as e:
             error = e
-        self.assertTrue(isinstance(e, ValueError))
+        self.assertTrue(isinstance(error, ValueError))
 
     def test12Transform(self):
         a = augeas.Augeas(root=MYROOT)
