@@ -5,7 +5,6 @@ setup.py file for augeas
 """
 
 import os
-prefix = os.environ.get("prefix", "/usr")
 
 from distutils.core import setup
 
