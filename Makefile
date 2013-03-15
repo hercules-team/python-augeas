@@ -30,4 +30,4 @@ srpm: sdist
 	cp python-augeas.spec dist
 	rpmbuild -bs --define "_srcrpmdir ."  --define '_sourcedir dist' dist/python-augeas.spec
 
-.PHONY: sdist install build clean check distclean srpm
+.PHONY: sdist install build clean check distclean srpm all upload distcheck
