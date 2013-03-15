@@ -17,6 +17,10 @@ install:
 sdist:
 	python setup.py sdist
 
+upload:
+	tox
+	python setup.py sdist upload
+
 check:
 	make -C test check
 
