@@ -1,11 +1,9 @@
-PREFIX := /usr
-
 VERSION = $(shell grep version setup.py|sed -e "s/^[^']*//;s/[',]//g;")
 
 all: build
 
 clean:
-	PREFIX=$(PREFIX) python setup.py clean
+	python setup.py clean
 	rm -f augeas.py* 
 
 distclean: clean
@@ -14,10 +12,10 @@ distclean: clean
 build: augeas.py
 
 install:
-	PREFIX=$(PREFIX) python setup.py install
+	python setup.py install
 
 sdist:
-	PREFIX=$(PREFIX) python setup.py sdist
+	python setup.py sdist
 
 check:
 	make -C test check
