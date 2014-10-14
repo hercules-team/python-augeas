@@ -485,7 +485,9 @@ class Augeas(object):
         # Call the function
         ret = Augeas._libaugeas.aug_save(self.__handle)
         if ret != 0:
-            raise IOError("Unable to save to file!")
+            raise Exception("Unable to save to file! Save command delegated to "
+                + "augeas system library returned with non-zero code %s"
+                % (str(ret),))
 
     def load(self):
         """Load files into the tree. Which files to load and what lenses to use
