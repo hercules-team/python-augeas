@@ -328,6 +328,26 @@ class Augeas(object):
         if ret != 0:
             raise ValueError("Unable to move src to dst!")
 
+    def copy(self, src, dst):
+        """Copy the node 'src' to 'dst'. 'src' must match exactly one node
+           in the tree. 'dst' must either match exactly one node in the
+           tree, or may not exist yet. If 'dst' exists already, it and all
+           its descendants are deleted before copying 'src' there. If 'dst'
+           does not exist yet, it and all its missing ancestors are created."""
+
+        # Sanity checks
+        if not isinstance(src, string_types):
+            raise TypeError("src MUST be a string!")
+        if not isinstance(dst, string_types):
+            raise TypeError("dst MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Call the function
+        ret = Augeas._libaugeas.aug_cp(self.__handle, enc(src), enc(dst))
+        if ret != 0:
+            raise ValueError("Unable to copy src to dst!")
+
     def rename(self, src, dst):
         """Rename the label of all nodes matching 'src' to 'lbl'."""
 
