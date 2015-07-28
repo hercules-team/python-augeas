@@ -9,7 +9,7 @@ notifications:
    - raphael.pinson@camptocamp.com
 install:
   # Use latest Augeas
-  - sudo add-apt-repository -y ppa:raphink/augeas-dev
+  - sudo add-apt-repository -y ppa:raphink/augeas
   - sudo apt-get update
   - sudo apt-get install libaugeas-dev libxml2-dev
 script: make && make check
