@@ -218,6 +218,25 @@ class TestAugeas(unittest.TestCase):
         lbl = a.label("/augeas/version")
         self.assertEqual(lbl, "version")
 
+    def test15Copy(self):
+        a = augeas.Augeas(root=MYROOT)
+
+        orig_path = '/tmp/src/copy_test/a'
+        copy_path = '/tmp/dst/copy_test/a'
+        orig_value = 'test value'
+
+        a.set(orig_path, orig_value)
+
+        matches = a.match(orig_path)
+        self.failUnless(matches)
+
+        a.copy(orig_path, copy_path)
+
+        matches = a.match(copy_path)
+        self.failUnless(matches)
+        self.assertEqual(a.get(copy_path), a.get(orig_path))
+
+
 def getsuite():
     suite = unittest.TestSuite()
     suite = unittest.makeSuite(TestAugeas, 'test')
