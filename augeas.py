@@ -198,8 +198,8 @@ class Augeas(object):
             raise TypeError("base MUST be a string!")
         if type(sub) != str and sub != None:
             raise TypeError("sub MUST be a string or None!")
-        if type(value) != str:
-            raise TypeError("value MUST be a string!")
+        if type(value) != str and value != None:
+            raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
