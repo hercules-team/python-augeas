@@ -6,6 +6,7 @@ python:
   - 3.3
   - 3.4
   - 3.5
+  - pypy
 notifications:
   email:
    - raphael.pinson@camptocamp.com
@@ -14,4 +15,5 @@ install:
   - sudo add-apt-repository -y ppa:raphink/augeas
   - sudo apt-get update
   - sudo apt-get install libaugeas-dev libxml2-dev
-script: make && make check
+  - C_INCLUDE_PATH=/usr/include/libxml2/ pip install .
+script: make check

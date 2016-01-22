@@ -42,7 +42,7 @@ from sys import version_info as _pyver
 
 import cffi
 import types
-from ffi import ffi, lib
+from augeas.ffi import ffi, lib
 
 PY3 = _pyver >= (3,)
 AUGENC = 'utf8'
@@ -586,3 +586,5 @@ class augeas(Augeas):
         warnings.warn("use Augeas instead of augeas", DeprecationWarning,
                 stacklevel=2)
         super(augeas, self).__init__(*p, **k)
+
+__all__ = ['Augeas', 'augeas']
