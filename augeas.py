@@ -37,7 +37,8 @@ __credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
 Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 Nils Philippsen <nils@redhat.com>
 """
-
+import cffi
+from ffi import ffi, lib
 import types
 import ctypes
 import ctypes.util
@@ -58,11 +59,15 @@ else:
 def enc(st):
     if st:
         return st.encode(AUGENC)
+    else:
+        return ''
 
 
 def dec(st):
     if st:
         return st.decode(AUGENC)
+    else:
+        return ''
 
 
 def _dlopen(*args):
@@ -114,15 +119,13 @@ class Augeas(object):
         if not isinstance(flags, int):
             raise TypeError("flag MUST be a flag!")
 
+        root = enc(root) if root else ffi.NULL
+        loadpath = enc(loadpath) if loadpath else ffi.NULL
+
         # Create the Augeas object
-        self.__handle = Augeas._libaugeas.aug_init(enc(root), enc(loadpath), flags)
+        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags), lib.aug_close)
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
-        # Make sure self.__handle is a void*, not an integer
-        self.__handle = ctypes.c_void_p(self.__handle)
-
-    def __del__(self):
-        self.close()
 
     def get(self, path):
         """Lookup the value associated with 'path'.
@@ -136,15 +139,14 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Create the char * value
-        value = ctypes.c_char_p()
+        value = ffi.new("char*[]", 1)
 
         # Call the function and pass value by reference (char **)
-        ret = Augeas._libaugeas.aug_get(self.__handle, enc(path),
-                                        ctypes.byref(value))
+        ret = lib.aug_get(self.__handle, enc(path), value)
         if ret > 1:
             raise ValueError("path specified had too many matches!")
 
-        return dec(value.value)
+        return dec(ffi.string(value[0])) if value[0] != ffi.NULL else None
 
     def label(self, path):
         """Lookup the label associated with 'path'.
@@ -158,15 +160,14 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Create the char * value
-        label = ctypes.c_char_p()
+        label = ffi.new("char*[]", 1)
 
         # Call the function and pass value by reference (char **)
-        ret = Augeas._libaugeas.aug_label(self.__handle, enc(path),
-                                          ctypes.byref(label))
+        ret = lib.aug_label(self.__handle, enc(path), label)
         if ret > 1:
             raise ValueError("path specified had too many matches!")
 
-        return dec(label.value)
+        return dec(ffi.string(label[0])) if label[0] != ffi.NULL else None
 
     def set(self, path, value):
         """Set the value associated with 'path' to 'value'.
@@ -182,7 +183,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_set(self.__handle, enc(path), enc(value))
+        ret = lib.aug_set(self.__handle, enc(path), enc(value))
         if ret != 0:
             raise ValueError("Unable to set value to path!")
 
@@ -204,7 +205,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_setm(
+        ret = lib.aug_setm(
             self.__handle, enc(base), enc(sub), enc(value))
         if ret < 0:
             raise ValueError("Unable to set value to path!")
@@ -226,7 +227,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_text_store(
+        ret = lib.aug_text_store(
             self.__handle, enc(lens), enc(node), enc(path))
         if ret != 0:
             raise ValueError("Unable to store text at node!")
@@ -250,7 +251,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_text_retrieve(
+        ret = lib.aug_text_retrieve(
             self.__handle, enc(lens), enc(node_in), enc(path), enc(node_out))
         if ret != 0:
             raise ValueError("Unable to store text at node!")
@@ -260,10 +261,10 @@ class Augeas(object):
         """Define a variable 'name' whose value is the result of
         evaluating 'expr'. If a variable 'name' already exists, its
         name will be replaced with the result of evaluating 'expr'.
- 
+
         If 'expr' is None, the variable 'name' will be removed if it
         is defined.
- 
+
         Path variables can be used in path expressions later on by
         prefixing them with '$'."""
 
@@ -276,7 +277,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_defvar(self.__handle, enc(name), enc(expr))
+        ret = lib.aug_defvar(self.__handle, enc(name), enc(expr))
         if ret < 0:
             raise ValueError("Unable to register variable!")
         return ret
@@ -286,7 +287,7 @@ class Augeas(object):
         evaluating 'expr', which must not be None and evaluate to a
         nodeset. If a variable 'name' already exists, its name will
         be replaced with the result of evaluating 'expr'.
- 
+
         If 'expr' evaluates to an empty nodeset, a node is created,
         equivalent to calling set(expr, value) and 'name' will be the
         nodeset containing that single node."""
@@ -302,8 +303,8 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_defnode(
-            self.__handle, enc(name), enc(expr), enc(value), None)
+        ret = lib.aug_defnode(
+            self.__handle, enc(name), enc(expr), enc(value), ffi.NULL)
         if ret < 0:
             raise ValueError("Unable to register node!")
         return ret
@@ -324,7 +325,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_mv(self.__handle, enc(src), enc(dst))
+        ret = lib.aug_mv(self.__handle, enc(src), enc(dst))
         if ret != 0:
             raise ValueError("Unable to move src to dst!")
 
@@ -344,7 +345,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_cp(self.__handle, enc(src), enc(dst))
+        ret = lib.aug_cp(self.__handle, enc(src), enc(dst))
         if ret != 0:
             raise ValueError("Unable to copy src to dst!")
 
@@ -360,7 +361,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_rename(self.__handle, enc(src), enc(dst))
+        ret = lib.aug_rename(self.__handle, enc(src), enc(dst))
         if ret < 0:
             raise ValueError("Unable to rename src as dst!")
         return ret
@@ -383,7 +384,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_insert(self.__handle, enc(path),
+        ret = lib.aug_insert(self.__handle, enc(path),
                                            enc(label), before and 1 or 0)
         if ret != 0:
             raise ValueError("Unable to insert label!")
@@ -400,7 +401,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        return Augeas._libaugeas.aug_rm(self.__handle, enc(path))
+        return lib.aug_rm(self.__handle, enc(path))
 
     def match(self, path):
         """Return the matches of the path expression 'path'. The returned paths
@@ -424,30 +425,20 @@ class Augeas(object):
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
-        # Create a void ** (this is so python won't mangle the char **,
-        # when we free it)
-        array = ctypes.POINTER(ctypes.c_void_p)()
+        parray = ffi.new('char***')
 
-        # Call the function and pass the void ** by reference (void ***)
-        ret = Augeas._libaugeas.aug_match(self.__handle, enc(path),
-                                          ctypes.byref(array))
+        ret = lib.aug_match(self.__handle, enc(path), parray)
         if ret < 0:
             raise RuntimeError("Error during match procedure!", path)
 
         # Loop through the string array
+        array = parray[0]
         matches = []
         for i in range(ret):
-            if array[i]:
+            if array[i] != ffi.NULL:
                 # Create a python string and append it to our matches list
-                matches.append(dec(ctypes.cast(array[i],
-                                               ctypes.c_char_p).value))
-
-                # Free the string at this point in the array
-                # Wrap the string as a void* as it was not allocated by Python
-                ctypes.pythonapi.PyMem_Free(ctypes.c_void_p(array[i]))
-
-        # Free the array itself
-        ctypes.pythonapi.PyMem_Free(array)
+                item = ffi.string(array[i])
+                matches.append(dec(item))
 
         return matches
 
@@ -464,26 +455,26 @@ class Augeas(object):
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
-        filename = ctypes.c_char_p()
-        label_start = ctypes.c_uint()
-        label_end = ctypes.c_uint()
-        value_start = ctypes.c_uint()
-        value_end = ctypes.c_uint()
-        span_start = ctypes.c_uint()
-        span_end = ctypes.c_uint()
+        # TODO: Rewrite this
 
-        r = ctypes.byref
+        filename = ffi.new('char **')
+        label_start = ffi.new('unsigned int *')
+        label_end = ffi.new('unsigned int *')
+        value_start = ffi.new('unsigned int *')
+        value_end = ffi.new('unsigned int *')
+        span_start = ffi.new('unsigned int *')
+        span_end = ffi.new('unsigned int *')
 
-        ret = Augeas._libaugeas.aug_span(self.__handle, enc(path), r(filename),
-                                         r(label_start), r(label_end),
-                                         r(value_start), r(value_end),
-                                         r(span_start), r(span_end))
+        ret = lib.aug_span(self.__handle, enc(path), filename,
+                                         label_start, label_end,
+                                         value_start, value_end,
+                                         span_start, span_end)
         if (ret < 0):
             raise ValueError("Error during span procedure")
-
-        return (dec(filename.value), label_start.value, label_end.value,
-                value_start.value, value_end.value,
-                span_start.value, span_end.value)
+        fname = dec(ffi.string(filename[0])) if filename != ffi.NULL else None
+        return (fname, int(label_start[0]), int(label_end[0]),
+                int(value_start[0]), int(value_end[0]),
+                int(span_start[0]), int(span_end[0]))
 
     def save(self):
         """Write all pending changes to disk. Only files that had any changes
@@ -503,7 +494,7 @@ class Augeas(object):
             raise RuntimeError("The Augeas object has already been closed!")
 
         # Call the function
-        ret = Augeas._libaugeas.aug_save(self.__handle)
+        ret = lib.aug_save(self.__handle)
         if ret != 0:
             raise IOError("Unable to save to file!")
 
@@ -535,7 +526,7 @@ class Augeas(object):
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
-        ret = Augeas._libaugeas.aug_load(self.__handle)
+        ret = lib.aug_load(self.__handle)
         if ret != 0:
             raise RuntimeError("aug_load() failed!")
 
@@ -584,7 +575,7 @@ class Augeas(object):
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
-        ret = Augeas._libaugeas.aug_transform(self.__handle, enc(lens), enc(file), excl)
+        ret = lib.aug_transform(self.__handle, enc(lens), enc(file), excl)
         if ret != 0:
             raise RuntimeError("Unable to add transform!")
 
@@ -598,7 +589,7 @@ class Augeas(object):
             return
 
         # Call the function
-        Augeas._libaugeas.aug_close(self.__handle)
+        lib.aug_close(self.__handle)
 
         # Mark the object as closed
         self.__handle = None
