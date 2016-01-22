@@ -1,4 +1,5 @@
 from cffi import FFI
+
 ffi = FFI()
 ffi.set_source("augeas",
                """
@@ -40,4 +41,4 @@ void aug_close(augeas *aug);
 void free(void *);
 """)
 
-lib = ffi.dlopen(None)
+lib = ffi.dlopen("augeas")

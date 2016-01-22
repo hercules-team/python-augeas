@@ -37,14 +37,12 @@ __credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
 Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 Nils Philippsen <nils@redhat.com>
 """
-import cffi
-from ffi import ffi, lib
-import types
-import ctypes
-import ctypes.util
-from sys import version_info as _pyver
 from functools import reduce
+from sys import version_info as _pyver
 
+import cffi
+import types
+from ffi import ffi, lib
 
 PY3 = _pyver >= (3,)
 AUGENC = 'utf8'
@@ -69,24 +67,8 @@ def dec(st):
     else:
         return ''
 
-
-def _dlopen(*args):
-    """Search for one of the libraries given as arguments and load it.
-    Returns the library.
-    """
-    libs = [l for l in [ ctypes.util.find_library(a) for a in args ] if l]
-    lib  = reduce(lambda x, y: x or ctypes.cdll.LoadLibrary(y), libs, None)
-    if not lib:
-        raise ImportError("Unable to import lib%s!" % args[0])
-    return lib
-
 class Augeas(object):
     "Class wrapper for the augeas library"
-
-    # Load libaugeas
-    _libaugeas = _dlopen("augeas")
-    _libaugeas.aug_init.restype = ctypes.c_void_p
-
     # Augeas Flags
     NONE = 0
     SAVE_BACKUP = 1 << 0
