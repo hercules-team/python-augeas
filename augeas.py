@@ -122,7 +122,8 @@ class Augeas(object):
         self.__handle = ctypes.c_void_p(self.__handle)
 
     def __del__(self):
-        self.close()
+        if Augeas:
+            self.close()
 
     def get(self, path):
         """Lookup the value associated with 'path'.
