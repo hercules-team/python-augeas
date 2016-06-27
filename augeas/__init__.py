@@ -47,7 +47,6 @@ from augeas.ffi import ffi, lib
 PY3 = _pyver >= (3,)
 AUGENC = 'utf8'
 
-
 if PY3:
     string_types = str
 else:
@@ -66,6 +65,7 @@ def dec(st):
         return st.decode(AUGENC)
     else:
         return ''
+
 
 class Augeas(object):
     "Class wrapper for the augeas library"
@@ -367,7 +367,7 @@ class Augeas(object):
 
         # Call the function
         ret = lib.aug_insert(self.__handle, enc(path),
-                                           enc(label), before and 1 or 0)
+                             enc(label), before and 1 or 0)
         if ret != 0:
             raise ValueError("Unable to insert label!")
 
@@ -421,7 +421,8 @@ class Augeas(object):
                 # Create a python string and append it to our matches list
                 item = ffi.string(array[i])
                 matches.append(dec(item))
-
+                lib.free(array[i])
+        lib.free(array)
         return matches
 
     def span(self, path):
@@ -448,9 +449,9 @@ class Augeas(object):
         span_end = ffi.new('unsigned int *')
 
         ret = lib.aug_span(self.__handle, enc(path), filename,
-                                         label_start, label_end,
-                                         value_start, value_end,
-                                         span_start, span_end)
+                           label_start, label_end,
+                           value_start, value_end,
+                           span_start, span_end)
         if (ret < 0):
             raise ValueError("Error during span procedure")
         fname = dec(ffi.string(filename[0])) if filename != ffi.NULL else None
@@ -530,9 +531,9 @@ class Augeas(object):
             import warnings
             warnings.warn("name is now deprecated in this function", DeprecationWarning,
                           stacklevel=2)
-        if isinstance (incl, string_types):
+        if isinstance(incl, string_types):
             incl = [incl]
-        if isinstance (excl, string_types):
+        if isinstance(excl, string_types):
             excl = [excl]
 
         for i in range(len(incl)):
@@ -576,6 +577,7 @@ class Augeas(object):
         # Mark the object as closed
         self.__handle = None
 
+
 # for backwards compatibility
 # pylint: disable-msg=C0103
 class augeas(Augeas):
@@ -584,7 +586,8 @@ class augeas(Augeas):
     def __init__(self, *p, **k):
         import warnings
         warnings.warn("use Augeas instead of augeas", DeprecationWarning,
-                stacklevel=2)
+                      stacklevel=2)
         super(augeas, self).__init__(*p, **k)
+
 
 __all__ = ['Augeas', 'augeas']
