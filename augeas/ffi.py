@@ -5,7 +5,8 @@ ffi.set_source("augeas",
                """
                #include <augeas.h>
                """,
-               libraries=['augeas'])
+               libraries=['augeas'],
+               include_dirs=["/usr/include/libxml2"])
 
 ffi.cdef("""
 typedef struct augeas augeas;

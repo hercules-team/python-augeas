@@ -15,5 +15,5 @@ install:
   - sudo add-apt-repository -y ppa:raphink/augeas
   - sudo apt-get update
   - sudo apt-get install libaugeas-dev libxml2-dev
-  - C_INCLUDE_PATH=/usr/include/libxml2/ pip install .
+  - pip install .
 script: make check
