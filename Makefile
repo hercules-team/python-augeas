@@ -11,7 +11,8 @@ clean:
 distclean: clean
 	rm -fr build dist MANIFEST
 
-build: PREFIX=$(PREFIX) python setup.py build
+build:
+	PREFIX=$(PREFIX) python setup.py build
 
 install:
 	PREFIX=$(PREFIX) python setup.py install
