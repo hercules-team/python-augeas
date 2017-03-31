@@ -34,10 +34,22 @@ def recurmatch(aug, path):
                     yield x
 
 class TestAugeas(unittest.TestCase):
-    def test01Get(self):
-        "test aug_get"
+    def test01aGetNone(self):
+        "test aug_get with non-existing path"
         a = augeas.Augeas(root=MYROOT)
-        self.failUnless(a.get("/wrong/path") == None)
+        self.failUnless(a.get("/wrong/path") is None)
+        del a
+
+    def test01bGetValue(self):
+        "test aug_get with existing path"
+        a = augeas.Augeas(root=MYROOT)
+        self.assertEqual(a.get("/files/etc/hosts/1/ipaddr"), "127.0.0.1")
+        del a
+
+    def test01cGetException(self):
+        "test aug_get with incorrect path"
+        a = augeas.Augeas(root=MYROOT)
+        self.assertRaises(ValueError, a.get, "/files//[1]/")
         del a
 
     def test02Match(self):
