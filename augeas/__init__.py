@@ -146,8 +146,8 @@ class Augeas(object):
 
         # Call the function and pass value by reference (char **)
         ret = lib.aug_label(self.__handle, enc(path), label)
-        if ret > 1:
-            raise ValueError("path specified had too many matches!")
+        if ret < 0:
+            raise ValueError("path specified had too many matches or is illegal!")
 
         return dec(ffi.string(label[0])) if label[0] != ffi.NULL else None
 
