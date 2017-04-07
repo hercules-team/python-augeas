@@ -4,14 +4,13 @@ import os
 import sys
 import unittest
 
-import augeas
-
 __mydir = os.path.dirname(sys.argv[0])
 if not os.path.isdir(__mydir):
     __mydir = os.getcwd()
 
 sys.path.insert(0, __mydir + "/..")
 
+import augeas
 
 MYROOT = __mydir + "/testroot"
 
