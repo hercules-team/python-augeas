@@ -2,11 +2,8 @@ from cffi import FFI
 
 ffi = FFI()
 ffi.set_source("augeas",
-               """
-               #include <augeas.h>
-               """,
-               libraries=['augeas'],
-               include_dirs=["/usr/include/libxml2"])
+               None,
+               libraries=['augeas'])
 
 ffi.cdef("""
 typedef struct augeas augeas;
@@ -43,3 +40,6 @@ void free(void *);
 """)
 
 lib = ffi.dlopen("augeas")
+
+if __name__ == "__main__":
+    ffi.compile(verbose=True)
