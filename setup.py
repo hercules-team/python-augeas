@@ -12,7 +12,7 @@ prefix = os.environ.get("prefix", "/usr")
 
 
 setup (name = 'python-augeas',
-       version = '1.0.1',
+       version = '1.0.2',
        author      = "Harald Hoyer",
        author_email = "augeas-devel@redhat.com",
        description = """Python bindings for Augeas""",
