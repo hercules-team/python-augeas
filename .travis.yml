@@ -1,19 +1,27 @@
 language: python
 python:
-  - 2.6
-  - 2.7
-  - 3.2
-  - 3.3
-  - 3.4
-  - 3.5
-  - pypy
+- 2.6
+- 2.7
+- 3.2
+- 3.3
+- 3.4
+- 3.5
+- pypy
 notifications:
   email:
-   - raphael.pinson@camptocamp.com
+  - raphael.pinson@camptocamp.com
 install:
-  # Use latest Augeas
-  - sudo add-apt-repository -y ppa:raphink/augeas
-  - sudo apt-get update
-  - sudo apt-get install libaugeas-dev
-  - pip install .
+- sudo add-apt-repository -y ppa:raphink/augeas
+- sudo apt-get update
+- sudo apt-get install libaugeas-dev
+- pip install .
 script: make check
+deploy:
+  provider: pypi
+  user: the_drow
+  password:
+    secure: FAsA8tIeTBhQQsJflaUwlE8XLIBjPMdmoT8WRVNkFght6ANdaW7+W9HznQvPc8qMbOpT8/K6ToTd8bIb678VRPhzxBkmpStj78wPPET5Q8MANakik73azqfvu6OMKXwpbcLtbaeeqZkRE5LP0ueYyGKtyyvR7iGtBmJbawYiEjo=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: hercules-team/python-augeas
