@@ -57,7 +57,7 @@ def enc(st):
     if st:
         return st.encode(AUGENC)
     else:
-        return ''
+        return b''
 
 
 def dec(st):
