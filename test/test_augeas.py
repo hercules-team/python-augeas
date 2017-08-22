@@ -98,7 +98,7 @@ class TestAugeas(unittest.TestCase):
             for attr in a.match(i+"/*"):
                 self.failUnless(a.get(attr) != None)
         del a
-        
+
     def test06Defnode(self):
         "test defnode"
         a = augeas.Augeas(root=MYROOT)
@@ -254,6 +254,10 @@ class TestAugeas(unittest.TestCase):
         matches = a.match(copy_path)
         self.failUnless(matches)
         self.assertEqual(a.get(copy_path), a.get(orig_path))
+
+    def testClose(self):
+        a = augeas.Augeas(root=MYROOT)
+        a.close()
 
 
 def getsuite():

@@ -105,7 +105,7 @@ class Augeas(object):
         loadpath = enc(loadpath) if loadpath else ffi.NULL
 
         # Create the Augeas object
-        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags), lib.aug_close)
+        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags), lambda x: self.close)
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
 
@@ -568,7 +568,7 @@ class Augeas(object):
         for any more operations."""
 
         # If we are already closed, return
-        if not self.__handle:
+        if not self.__handle or self.__handle == ffi.NULL:
             return
 
         # Call the function
