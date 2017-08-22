@@ -64,7 +64,7 @@ def dec(st):
     if st:
         return st.decode(AUGENC)
     else:
-        return ''
+        return b''
 
 
 class Augeas(object):
