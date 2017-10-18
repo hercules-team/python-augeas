@@ -143,14 +143,14 @@ class TestAugeas(unittest.TestCase):
 
         error = None
         try:
-            r = a.span("/files")
+            a.span("/files")
         except ValueError as e:
             error = e
         self.assertTrue(isinstance(error, ValueError))
 
         error = None
         try:
-            r = a.span("/random")
+            a.span("/random")
         except ValueError as e:
             error = e
         self.assertTrue(isinstance(error, ValueError))
@@ -160,46 +160,46 @@ class TestAugeas(unittest.TestCase):
     def test09TextStore(self):
         hosts = "192.168.0.1 rtr.example.com router\n"
         a = augeas.Augeas(root=MYROOT)
-        r = a.set("/raw/hosts", hosts);
-        r = a.text_store("Hosts.lns", "/raw/hosts", "/t1")
+        a.set("/raw/hosts", hosts)
+        a.text_store("Hosts.lns", "/raw/hosts", "/t1")
 
         # Test bad lens name
         try:
-            r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
+            a.text_store("Notthere.lns", "/raw/hosts", "/t2")
         except ValueError as e:
             error = e
         self.assertTrue(isinstance(error, ValueError))
 
     def testSetNone(self):
         a = augeas.Augeas(root=MYROOT)
-        r = a.set("/raw/hosts", None);
+        a.set("/raw/hosts", None)
 
     def test10TextRetrieve(self):
         hosts = "192.168.0.1 rtr.example.com router\n"
         a = augeas.Augeas(root=MYROOT)
-        r = a.set("/raw/hosts", hosts);
-        r = a.text_store("Hosts.lns", "/raw/hosts", "/t1")
-        r = a.text_retrieve("Hosts.lns", "/raw/hosts", "/t1", "/out/hosts")
+        a.set("/raw/hosts", hosts)
+        a.text_store("Hosts.lns", "/raw/hosts", "/t1")
+        a.text_retrieve("Hosts.lns", "/raw/hosts", "/t1", "/out/hosts")
         hosts_out = a.get("/out/hosts")
         self.assertEqual(hosts, hosts_out)
 
         # Test bad lens name
         try:
-            r = a.text_store("Notthere.lns", "/raw/hosts", "/t2")
+            a.text_store("Notthere.lns", "/raw/hosts", "/t2")
         except ValueError as e:
             error = e
         self.assertTrue(isinstance(error, ValueError))
 
     def test11Rename(self):
         a = augeas.Augeas(root=MYROOT)
-        r = a.set("/a/b/c", "value");
-        r = a.rename("/a/b/c", "d");
+        a.set("/a/b/c", "value")
+        r = a.rename("/a/b/c", "d")
         self.assertEqual(r, 1)
-        r = a.set("/a/e/d", "value2");
-        r = a.rename("/a//d", "x");
+        a.set("/a/e/d", "value2")
+        r = a.rename("/a//d", "x")
         self.assertEqual(r, 2)
         try:
-            r = a.rename("/a/e/x", "a/b");
+           a.rename("/a/e/x", "a/b")
         except ValueError as e:
             error = e
         self.assertTrue(isinstance(error, ValueError))
@@ -207,24 +207,24 @@ class TestAugeas(unittest.TestCase):
     def test12Transform(self):
         a = augeas.Augeas(root=MYROOT)
 
-        r = a.transform("Foo", "/tmp/bar")
+        a.transform("Foo", "/tmp/bar")
         lens = a.get("/augeas/load/Foo/lens")
         self.assertEqual(lens, "Foo.lns")
         incl = a.get("/augeas/load/Foo/incl")
         self.assertEqual(incl, "/tmp/bar")
 
-        r = a.transform("Foo", "/tmp/baz", True)
+        a.transform("Foo", "/tmp/baz", True)
         excl = a.get("/augeas/load/Foo/excl")
         self.assertEqual(excl, "/tmp/baz")
 
     def test13AddTransform(self):
         a = augeas.Augeas(root=MYROOT)
 
-        r = a.add_transform("Foo", "/tmp/bar")
+        a.add_transform("Foo", "/tmp/bar")
         incl = a.get("/augeas/load/Foo/incl")
         self.assertEqual(incl, "/tmp/bar")
 
-        r = a.add_transform("Foo", "/tmp/bar", "Faz", "/tmp/baz")
+        a.add_transform("Foo", "/tmp/bar", "Faz", "/tmp/baz")
         excl = a.get("/augeas/load/Foo/excl")
         self.assertEqual(excl, "/tmp/baz")
 
