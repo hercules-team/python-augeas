@@ -37,11 +37,8 @@ __credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
 Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 Nils Philippsen <nils@redhat.com>
 """
-from functools import reduce
 from sys import version_info as _pyver
 
-import cffi
-import types
 from augeas.ffi import ffi, lib
 
 PY3 = _pyver >= (3,)
