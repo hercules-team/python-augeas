@@ -382,7 +382,7 @@ class Augeas(object):
         # Call the function
         return lib.aug_rm(self.__handle, enc(path))
 
-    def match(self, path):
+    def match(self, path, value=None):
         """Return the matches of the path expression 'path'. The returned paths
         are sufficiently qualified to make sure that they match exactly one
         node in the current tree.
@@ -401,6 +401,8 @@ class Augeas(object):
         # Sanity checks
         if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
+        if not isinstance(value, string_types) and value is not None:
+            raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
 
@@ -417,7 +419,13 @@ class Augeas(object):
             if array[i] != ffi.NULL:
                 # Create a python string and append it to our matches list
                 item = ffi.string(array[i])
-                matches.append(dec(item))
+                if value is not None:
+                    matched_value = self.get(item)
+                    if matched_value == value:
+                        matches.append(dec(item))
+                else:
+                    matches.append(dec(item))
+
                 lib.free(array[i])
         lib.free(array)
         return matches
