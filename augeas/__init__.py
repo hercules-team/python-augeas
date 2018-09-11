@@ -77,6 +77,12 @@ class Augeas(object):
     NO_MODL_AUTOLOAD = 1 << 6
     ENABLE_SPAN = 1 << 7
 
+    def _optffistring(self, cffistr):
+        if cffistr == ffi.NULL:
+            return None
+        else:
+            return dec(ffi.string(cffistr))
+
     def __init__(self, root=None, loadpath=None, flags=NONE):
         """Initialize the library.
 
@@ -125,7 +131,7 @@ class Augeas(object):
         if ret < 0:
             raise ValueError("path specified had too many matches or is illegal!")
 
-        return dec(ffi.string(value[0])) if value[0] != ffi.NULL else None
+        return self._optffistring(value[0])
 
     def label(self, path):
         """Lookup the label associated with 'path'.
@@ -146,7 +152,7 @@ class Augeas(object):
         if ret < 0:
             raise ValueError("path specified had too many matches or is illegal!")
 
-        return dec(ffi.string(label[0])) if label[0] != ffi.NULL else None
+        return self._optffistring(label[0])
 
     def set(self, path, value):
         """Set the value associated with 'path' to 'value'.
@@ -451,7 +457,7 @@ class Augeas(object):
                            span_start, span_end)
         if (ret < 0):
             raise ValueError("Error during span procedure")
-        fname = dec(ffi.string(filename[0])) if filename != ffi.NULL else None
+        fname = self._optffistring(filename[0])
         return (fname, int(label_start[0]), int(label_end[0]),
                 int(value_start[0]), int(value_end[0]),
                 int(span_start[0]), int(span_end[0]))
