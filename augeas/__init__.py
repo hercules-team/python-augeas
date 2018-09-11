@@ -64,6 +64,36 @@ def dec(st):
         return b''
 
 
+class AugeasIOError(IOError):
+    def __init__(self, ec, fullmessage, msg, minor, details, *args):
+        self.message = fullmessage
+        super(AugeasIOError, self).__init__(fullmessage, *args)
+        self.error = ec
+        self.msg = msg
+        self.minor = minor
+        self.details = details
+
+
+class AugeasRuntimeError(RuntimeError):
+    def __init__(self, ec, fullmessage, msg, minor, details, *args):
+        self.message = fullmessage
+        super(AugeasRuntimeError, self).__init__(fullmessage, *args)
+        self.error = ec
+        self.msg = msg
+        self.minor = minor
+        self.details = details
+
+
+class AugeasValueError(ValueError):
+    def __init__(self, ec, fullmessage, msg, minor, details, *args):
+        self.message = fullmessage
+        super(AugeasValueError, self).__init__(fullmessage, *args)
+        self.error = ec
+        self.msg = msg
+        self.minor = minor
+        self.details = details
+
+
 class Augeas(object):
     "Class wrapper for the augeas library"
     # Augeas Flags
@@ -77,11 +107,42 @@ class Augeas(object):
     NO_MODL_AUTOLOAD = 1 << 6
     ENABLE_SPAN = 1 << 7
 
+    # Augeas errors
+    AUG_NOERROR = 0
+    AUG_ENOMEM = 1
+    AUG_EINTERNAL = 2
+    AUG_EPATHX = 3
+    AUG_ENOMATCH = 4
+    AUG_EMMATCH = 5
+    AUG_ESYNTAX = 6
+    AUG_ENOLENS = 7
+    AUG_EMXFM = 8
+    AUG_ENOSPAN = 9
+    AUG_EMVDESC = 10
+    AUG_ECMDRUN = 11
+    AUG_EBADARG = 12
+    AUG_ELABEL = 13
+    AUG_ECPDESC = 14
+
     def _optffistring(self, cffistr):
         if cffistr == ffi.NULL:
             return None
         else:
             return dec(ffi.string(cffistr))
+
+    def _raise_error(self, errorclass, errmsg, *args):
+        ec = lib.aug_error(self.__handle)
+        if ec == Augeas.AUG_ENOMEM:
+            raise MemoryError()
+        msg = self._optffistring(lib.aug_error_message(self.__handle))
+        fullmessage = (errmsg + ": " + msg) % args
+        minor = self._optffistring(lib.aug_error_minor_message(self.__handle))
+        if minor:
+            fullmessage += ": " + minor
+        details = self._optffistring(lib.aug_error_details(self.__handle))
+        if details:
+            fullmessage += ": " + details
+        raise errorclass(ec, fullmessage, msg, minor, details)
 
     def __init__(self, root=None, loadpath=None, flags=NONE):
         """Initialize the library.
@@ -129,7 +190,7 @@ class Augeas(object):
         # Call the function and pass value by reference (char **)
         ret = lib.aug_get(self.__handle, enc(path), value)
         if ret < 0:
-            raise ValueError("path specified had too many matches or is illegal!")
+            self._raise_error(AugeasValueError, "Augeas.get() failed")
 
         return self._optffistring(value[0])
 
@@ -150,7 +211,7 @@ class Augeas(object):
         # Call the function and pass value by reference (char **)
         ret = lib.aug_label(self.__handle, enc(path), label)
         if ret < 0:
-            raise ValueError("path specified had too many matches or is illegal!")
+            self._raise_error(AugeasValueError, "Augeas.label() failed")
 
         return self._optffistring(label[0])
 
@@ -170,7 +231,7 @@ class Augeas(object):
         # Call the function
         ret = lib.aug_set(self.__handle, enc(path), enc(value))
         if ret != 0:
-            raise ValueError("Unable to set value to path!")
+            self._raise_error(AugeasValueError, "Augeas.set() failed")
 
     def setm(self, base, sub, value):
         """Set the value of multiple nodes in one operation.
@@ -193,7 +254,7 @@ class Augeas(object):
         ret = lib.aug_setm(
             self.__handle, enc(base), enc(sub), enc(value))
         if ret < 0:
-            raise ValueError("Unable to set value to path!")
+            self._raise_error(AugeasValueError, "Augeas.setm() failed")
         return ret
 
     def text_store(self, lens, node, path):
@@ -215,7 +276,7 @@ class Augeas(object):
         ret = lib.aug_text_store(
             self.__handle, enc(lens), enc(node), enc(path))
         if ret != 0:
-            raise ValueError("Unable to store text at node!")
+            self._raise_error(AugeasValueError, "Augeas.text_store() failed")
         return ret
 
     def text_retrieve(self, lens, node_in, path, node_out):
@@ -239,7 +300,8 @@ class Augeas(object):
         ret = lib.aug_text_retrieve(
             self.__handle, enc(lens), enc(node_in), enc(path), enc(node_out))
         if ret != 0:
-            raise ValueError("Unable to store text at node!")
+            self._raise_error(AugeasValueError,
+                              "Augeas.text_retrieve() failed")
         return ret
 
     def defvar(self, name, expr):
@@ -264,7 +326,7 @@ class Augeas(object):
         # Call the function
         ret = lib.aug_defvar(self.__handle, enc(name), enc(expr))
         if ret < 0:
-            raise ValueError("Unable to register variable!")
+            self._raise_error(AugeasValueError, "Augeas.defvar() failed")
         return ret
 
     def defnode(self, name, expr, value):
@@ -291,7 +353,7 @@ class Augeas(object):
         ret = lib.aug_defnode(
             self.__handle, enc(name), enc(expr), enc(value), ffi.NULL)
         if ret < 0:
-            raise ValueError("Unable to register node!")
+            self._raise_error(AugeasValueError, "Augeas.defnode() failed")
         return ret
 
     def move(self, src, dst):
@@ -312,7 +374,7 @@ class Augeas(object):
         # Call the function
         ret = lib.aug_mv(self.__handle, enc(src), enc(dst))
         if ret != 0:
-            raise ValueError("Unable to move src to dst!")
+            self._raise_error(AugeasValueError, "Augeas.move() failed")
 
     def copy(self, src, dst):
         """Copy the node 'src' to 'dst'. 'src' must match exactly one node
@@ -332,7 +394,7 @@ class Augeas(object):
         # Call the function
         ret = lib.aug_cp(self.__handle, enc(src), enc(dst))
         if ret != 0:
-            raise ValueError("Unable to copy src to dst!")
+            self._raise_error(AugeasValueError, "Augeas.copy() failed")
 
     def rename(self, src, dst):
         """Rename the label of all nodes matching 'src' to 'lbl'."""
@@ -348,7 +410,7 @@ class Augeas(object):
         # Call the function
         ret = lib.aug_rename(self.__handle, enc(src), enc(dst))
         if ret < 0:
-            raise ValueError("Unable to rename src as dst!")
+            self._raise_error(AugeasValueError, "Augeas.rename() failed")
         return ret
 
     def insert(self, path, label, before=True):
@@ -372,7 +434,7 @@ class Augeas(object):
         ret = lib.aug_insert(self.__handle, enc(path),
                              enc(label), before and 1 or 0)
         if ret != 0:
-            raise ValueError("Unable to insert label!")
+            self._raise_error(AugeasValueError, "Augeas.insert() failed")
 
     def remove(self, path):
         """Remove 'path' and all its children. Returns the number of entries
@@ -414,7 +476,8 @@ class Augeas(object):
 
         ret = lib.aug_match(self.__handle, enc(path), parray)
         if ret < 0:
-            raise RuntimeError("Error during match procedure!", path)
+            self._raise_error(AugeasRuntimeError,
+                              "Augeas.match() failed: %s", path)
 
         # Loop through the string array
         array = parray[0]
@@ -456,7 +519,7 @@ class Augeas(object):
                            value_start, value_end,
                            span_start, span_end)
         if (ret < 0):
-            raise ValueError("Error during span procedure")
+            self._raise_error(AugeasValueError, "Augeas.span() failed")
         fname = self._optffistring(filename[0])
         return (fname, int(label_start[0]), int(label_end[0]),
                 int(value_start[0]), int(value_end[0]),
@@ -482,7 +545,7 @@ class Augeas(object):
         # Call the function
         ret = lib.aug_save(self.__handle)
         if ret != 0:
-            raise IOError("Unable to save to file!")
+            self._raise_error(AugeasIOError, "Augeas.save() failed")
 
     def load(self):
         """Load files into the tree. Which files to load and what lenses to use
@@ -514,7 +577,7 @@ class Augeas(object):
 
         ret = lib.aug_load(self.__handle)
         if ret != 0:
-            raise RuntimeError("aug_load() failed!")
+            self._raise_error(AugeasRuntimeError, "Augeas.load() failed")
 
     def clear_transforms(self):
         """Clear all transforms beneath /augeas/load. If load() is called right
@@ -563,7 +626,7 @@ class Augeas(object):
 
         ret = lib.aug_transform(self.__handle, enc(lens), enc(file), excl)
         if ret != 0:
-            raise RuntimeError("Unable to add transform!")
+            self._raise_error(AugeasRuntimeError, "Augeas.transform() failed")
 
     def close(self):
         """Close this Augeas instance and free any storage associated with it.
