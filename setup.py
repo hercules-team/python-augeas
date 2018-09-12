@@ -31,4 +31,11 @@ setup (name = name,
            "Programming Language :: Python :: Implementation :: CPython",
            "Programming Language :: Python :: Implementation :: PyPy",
        ],
+       command_options = {
+           'build_sphinx': {
+               'project': ('setup.py', name),
+               'version': ('setup.py', version),
+               'release': ('setup.py', version),
+           }
+       },
        )
