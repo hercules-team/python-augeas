@@ -1,14 +1,12 @@
-"""Pure python bindings for the augeas library
-
+"""
 Augeas is a library for programmatically editing configuration files.
 Augeas parses configuration files into a tree structure, which it exposes
 through its public API. Changes made through the API are written back to
 the initially read files.
 
 The transformation works very hard to preserve comments and formatting
-details. It is controlled by ``lens'' definitions that describe the file
+details. It is controlled by *lens* definitions that describe the file
 format and the transformation into a tree.
-
 """
 
 #
@@ -65,30 +63,50 @@ def dec(st):
 
 
 class Augeas(object):
-    "Class wrapper for the augeas library"
+    """
+    Class wrapper for the Augeas library.
+    """
     # Augeas Flags
     NONE = 0
+    #: Keep the original file with a :samp:`.augsave` extension
     SAVE_BACKUP = 1 << 0
+    #: Save changes into a file with extension :samp:`.augnew`, and do not
+    #: overwrite the original file. Takes precedence over :attr:`SAVE_BACKUP`
     SAVE_NEWFILE = 1 << 1
+    #: Typecheck lenses; since it can be very expensive it is not done by
+    #: default
     TYPE_CHECK = 1 << 2
+    #: Do not use the builtin load path for modules
     NO_STDINC = 1 << 3
+    #: Make save a no-op process, just record what would have changed
     SAVE_NOOP = 1 << 4
+    #: Do not load the tree from :func:`~augeas.Augeas`
     NO_LOAD = 1 << 5
     NO_MODL_AUTOLOAD = 1 << 6
+    #: Track the span in the input of nodes
     ENABLE_SPAN = 1 << 7
 
     def __init__(self, root=None, loadpath=None, flags=NONE):
-        """Initialize the library.
+        """
+        Initialize the library.
 
-        Use 'root' as the filesystem root. If 'root' is None, use the value of
-        the environment variable AUGEAS_ROOT. If that doesn't exist either,
-        use "/".
+        :param root: the filesystem root. If `root` is :py:obj:`None`, use the
+                     value of the environment variable :envvar:`AUGEAS_ROOT`.
+                     If that doesn't exist either, use :samp:`/`.
+        :type root: str or None
 
-        'loadpath' is a colon-spearated list of directories that modules
-        should be searched in. This is in addition to the standard load path
-        and the directories in AUGEAS_LENS_LIB.
+        :param loadpath: a colon-separated list of directories that modules
+                         should be searched in. This is in addition to the
+                         standard load path and the directories in
+                         :envvar:`AUGEAS_LENS_LIB`.
+        :type loadpath: str or None
 
-        'flags' is a bitmask made up of values from AUG_FLAGS."""
+        :param flags: a combination of values of :attr:`SAVE_BACKUP`,
+                      :attr:`SAVE_NEWFILE`, :attr:`TYPE_CHECK`,
+                      :attr:`NO_STDINC`, :attr:`SAVE_NOOP`, :attr:`NO_LOAD`,
+                      :attr:`NO_MODL_AUTOLOAD`, and :attr:`ENABLE_SPAN`.
+        :type flags: int or :attr:`NONE`
+        """
 
         # Sanity checks
         if not isinstance(root, string_types) and root != None:
@@ -107,9 +125,13 @@ class Augeas(object):
             raise RuntimeError("Unable to create Augeas object!")
 
     def get(self, path):
-        """Lookup the value associated with 'path'.
-        Returns the value at the path specified.
-        It is an error if more than one node matches 'path'."""
+        """
+        Lookup the value associated with `path`.
+        It is an error if more than one node matches `path`.
+
+        :returns: the value at the path specified
+        :rtype: str
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -128,9 +150,13 @@ class Augeas(object):
         return dec(ffi.string(value[0])) if value[0] != ffi.NULL else None
 
     def label(self, path):
-        """Lookup the label associated with 'path'.
-        Returns the label of the path specified.
-        It is an error if more than one node matches 'path'."""
+        """
+        Lookup the label associated with `path`.
+        It is an error if more than one node matches `path`.
+
+        :returns: the label of the path specified
+        :rtype: str
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -149,9 +175,11 @@ class Augeas(object):
         return dec(ffi.string(label[0])) if label[0] != ffi.NULL else None
 
     def set(self, path, value):
-        """Set the value associated with 'path' to 'value'.
+        """
+        Set the value associated with `path` to `value`.
         Intermediate entries are created if they don't exist.
-        It is an error if more than one node matches 'path'."""
+        It is an error if more than one node matches `path`.
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -167,11 +195,13 @@ class Augeas(object):
             raise ValueError("Unable to set value to path!")
 
     def setm(self, base, sub, value):
-        """Set the value of multiple nodes in one operation.
-        Find or create a node matching 'sub' by interpreting 'sub'
-        as a path expression relative to each node matching 'base'.
-        'sub' may be None, in which case all the nodes matching
-        'base' will be modified."""
+        """
+        Set the value of multiple nodes in one operation.
+        Find or create a node matching `sub` by interpreting `sub`
+        as a path expression relative to each node matching `base`.
+        `sub` may be :py:obj:`None`, in which case all the nodes matching
+        `base` will be modified.
+        """
 
         # Sanity checks
         if type(base) != str:
@@ -191,9 +221,11 @@ class Augeas(object):
         return ret
 
     def text_store(self, lens, node, path):
-        """Use the value of node 'node' as a string and transform it into a tree
-        using the lens 'lens' and store it in the tree at 'path', which will be
-        overwritten. 'path' and 'node' are path expressions."""
+        """
+        Use the value of node `node` as a string and transform it into a tree
+        using the lens `lens` and store it in the tree at `path`, which will be
+        overwritten. `path` and `node` are path expressions.
+        """
 
         # Sanity checks
         if not isinstance(lens, string_types):
@@ -213,9 +245,12 @@ class Augeas(object):
         return ret
 
     def text_retrieve(self, lens, node_in, path, node_out):
-        """Transform the tree at 'path' into a string using lens 'lens' and store it in
-        the node 'node_out', assuming the tree was initially generated using the
-        value of node 'node_in'. 'path', 'node_in', and 'node_out' are path expressions."""
+        """
+        Transform the tree at `path` into a string using lens `lens` and store
+        it in the node `node_out`, assuming the tree was initially generated
+        using the value of node `node_in`. `path`, `node_in`, and `node_out`
+        are path expressions.
+        """
 
         # Sanity checks
         if not isinstance(lens, string_types):
@@ -237,15 +272,17 @@ class Augeas(object):
         return ret
 
     def defvar(self, name, expr):
-        """Define a variable 'name' whose value is the result of
-        evaluating 'expr'. If a variable 'name' already exists, its
-        name will be replaced with the result of evaluating 'expr'.
+        """
+        Define a variable `name` whose value is the result of
+        evaluating `expr`. If a variable `name` already exists, its
+        name will be replaced with the result of evaluating `expr`.
 
-        If 'expr' is None, the variable 'name' will be removed if it
+        If `expr` is :py:obj:`None`, the variable `name` will be removed if it
         is defined.
 
         Path variables can be used in path expressions later on by
-        prefixing them with '$'."""
+        prefixing them with :samp:`$`.
+        """
 
         # Sanity checks
         if type(name) != str:
@@ -262,14 +299,16 @@ class Augeas(object):
         return ret
 
     def defnode(self, name, expr, value):
-        """Define a variable 'name' whose value is the result of
-        evaluating 'expr', which must not be None and evaluate to a
-        nodeset. If a variable 'name' already exists, its name will
-        be replaced with the result of evaluating 'expr'.
+        """
+        Define a variable `name` whose value is the result of
+        evaluating `expr`, which must not be :py:obj:`None` and evaluate to a
+        nodeset. If a variable `name` already exists, its name will
+        be replaced with the result of evaluating `expr`.
 
-        If 'expr' evaluates to an empty nodeset, a node is created,
-        equivalent to calling set(expr, value) and 'name' will be the
-        nodeset containing that single node."""
+        If `expr` evaluates to an empty nodeset, a node is created,
+        equivalent to calling ``set(expr, value)`` and `name` will be the
+        nodeset containing that single node.
+        """
 
         # Sanity checks
         if type(name) != str:
@@ -289,11 +328,13 @@ class Augeas(object):
         return ret
 
     def move(self, src, dst):
-        """Move the node 'src' to 'dst'. 'src' must match exactly one node
-           in the tree. 'dst' must either match exactly one node in the
-           tree, or may not exist yet. If 'dst' exists already, it and all
-           its descendants are deleted before moving 'src' there. If 'dst'
-           does not exist yet, it and all its missing ancestors are created."""
+        """
+        Move the node `src` to `dst`. `src` must match exactly one node
+        in the tree. `dst` must either match exactly one node in the
+        tree, or may not exist yet. If `dst` exists already, it and all
+        its descendants are deleted before moving `src` there. If `dst`
+        does not exist yet, it and all its missing ancestors are created.
+        """
 
         # Sanity checks
         if not isinstance(src, string_types):
@@ -309,11 +350,13 @@ class Augeas(object):
             raise ValueError("Unable to move src to dst!")
 
     def copy(self, src, dst):
-        """Copy the node 'src' to 'dst'. 'src' must match exactly one node
-           in the tree. 'dst' must either match exactly one node in the
-           tree, or may not exist yet. If 'dst' exists already, it and all
-           its descendants are deleted before copying 'src' there. If 'dst'
-           does not exist yet, it and all its missing ancestors are created."""
+        """
+        Copy the node `src` to `dst`. `src` must match exactly one node
+        in the tree. `dst` must either match exactly one node in the
+        tree, or may not exist yet. If `dst` exists already, it and all
+        its descendants are deleted before copying `src` there. If `dst`
+        does not exist yet, it and all its missing ancestors are created.
+        """
 
         # Sanity checks
         if not isinstance(src, string_types):
@@ -329,7 +372,9 @@ class Augeas(object):
             raise ValueError("Unable to copy src to dst!")
 
     def rename(self, src, dst):
-        """Rename the label of all nodes matching 'src' to 'lbl'."""
+        """
+        Rename the label of all nodes matching `src` to `dst`.
+        """
 
         # Sanity checks
         if not isinstance(src, string_types):
@@ -346,13 +391,15 @@ class Augeas(object):
         return ret
 
     def insert(self, path, label, before=True):
-        """Create a new sibling 'label' for 'path' by inserting into the tree
-        just before 'path' (if 'before' is True) or just after 'path'
-        (if 'before' is False).
+        """
+        Create a new sibling `label` for `path` by inserting into the tree
+        just before `path` (if `before` is :py:obj:`True`) or just after `path`
+        (if `before` is :py:obj:`False`).
 
-        'path' must match exactly one existing node in the tree, and 'label'
-        must be a label, i.e. not contain a '/', '*' or end with a bracketed
-        index '[N]'."""
+        `path` must match exactly one existing node in the tree, and `label`
+        must be a label, i.e. not contain a :samp:`/`, :samp:`*` or end with
+        a bracketed index :samp:`[N]`.
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -369,9 +416,11 @@ class Augeas(object):
             raise ValueError("Unable to insert label!")
 
     def remove(self, path):
-        """Remove 'path' and all its children. Returns the number of entries
-        removed. All nodes that match 'path', and their descendants, are
-        removed."""
+        """
+        Remove `path` and all its children. Returns the number of entries
+        removed. All nodes that match `path`, and their descendants, are
+        removed.
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -383,20 +432,23 @@ class Augeas(object):
         return lib.aug_rm(self.__handle, enc(path))
 
     def match(self, path):
-        """Return the matches of the path expression 'path'. The returned paths
+        """
+        Return the matches of the path expression `path`. The returned paths
         are sufficiently qualified to make sure that they match exactly one
         node in the current tree.
 
-        Path expressions use a very simple subset of XPath: the path 'path'
-        consists of a number of segments, separated by '/'; each segment can
-        either be a '*', matching any tree node, or a string, optionally
-        followed by an index in brackets, matching tree nodes labelled with
-        exactly that string. If no index is specified, the expression matches
-        all nodes with that label; the index can be a positive number N, which
-        matches exactly the Nth node with that label (counting from 1), or the
-        special expression 'last()' which matches the last node with the given
-        label. All matches are done in fixed positions in the tree, and nothing
-        matches more than one path segment."""
+        Path expressions use a very simple subset of XPath: the path `path`
+        consists of a number of segments, separated by :samp:`/`; each segment
+        can either be a :samp:`*`, matching any tree node, or a string,
+        optionally followed by an index in brackets, matching tree nodes
+        labelled with exactly that string. If no index is specified, the
+        expression matches all nodes with that label; the index can be a
+        positive number N, which matches exactly the *N*-th node with that
+        label (counting from 1), or the special expression :samp:`last()` which
+        matches the last node with the given label. All matches are done in
+        fixed positions in the tree, and nothing matches more than one path
+        segment.
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -423,11 +475,15 @@ class Augeas(object):
         return matches
 
     def span(self, path):
-        """Get the span according to input file of the node associated with
-        PATH. If the node is associated with a file, un tuple of 5 elements is
-        returned: (filename, label_start, label_end, value_start, value_end,
-        span_start, span_end). If the node associated with PATH doesn't
-        belong to a file or is doesn't exists, ValueError is raised."""
+        """
+        Get the span according to input file of the node associated with
+        `path`. If the node is associated with a file, a tuple of 7 elements is
+        returned: ``(filename, label_start, label_end, value_start, value_end,
+        span_start, span_end)``. If the node associated with `path` doesn't
+        belong to a file or is doesn't exists, :py:obj:`ValueError` is raised.
+
+        :rtype: tuple(str, int, int, int, int, int, int)
+        """
 
         # Sanity checks
         if not isinstance(path, string_types):
@@ -457,17 +513,19 @@ class Augeas(object):
                 int(span_start[0]), int(span_end[0]))
 
     def save(self):
-        """Write all pending changes to disk. Only files that had any changes
+        """
+        Write all pending changes to disk. Only files that had any changes
         made to them are written.
 
-        If SAVE_NEWFILE is set in the creation 'flags', create changed files as
-        new files with the extension ".augnew", and leave the original file
-        unmodified.
+        If :attr:`SAVE_NEWFILE` is set in the creation `flags`, create changed
+        files as new files with the extension :samp:`.augnew`, and leave the
+        original file unmodified.
 
-        Otherwise, if SAVE_BACKUP is set in the creation 'flags', move the
-        original file to a new file with extension ".augsave".
+        Otherwise, if :attr:`SAVE_BACKUP` is set in the creation `flags`, move
+        the original file to a new file with extension :samp:`.augsave`.
 
-        If neither of these flags is set, overwrite the original file."""
+        If neither of these flags is set, overwrite the original file.
+        """
 
         # Sanity checks
         if not self.__handle:
@@ -479,28 +537,31 @@ class Augeas(object):
             raise IOError("Unable to save to file!")
 
     def load(self):
-        """Load files into the tree. Which files to load and what lenses to use
-        on them is specified under /augeas/load in the tree; each entry
-        /augeas/load/NAME specifies a 'transform', by having itself exactly one
-        child 'lens' and any number of children labelled 'incl' and 'excl'. The
-        value of NAME has no meaning.
+        """
+        Load files into the tree. Which files to load and what lenses to use
+        on them is specified under :samp:`/augeas/load` in the tree; each entry
+        :samp:`/augeas/load/NAME` specifies a 'transform', by having itself
+        exactly one child 'lens' and any number of children labelled 'incl' and
+        'excl'. The value of :samp:`NAME` has no meaning.
 
-        The 'lens' grandchild of /augeas/load specifies which lens to use, and
-        can either be the fully qualified name of a lens 'Module.lens' or
-        '@Module'. The latter form means that the lens from the transform
-        marked for autoloading in MODULE should be used.
+        The 'lens' grandchild of :samp:`/augeas/load` specifies which lens to
+        use, and can either be the fully qualified name of a lens
+        :samp:`Module.lens` or :samp:`@Module`. The latter form means that the
+        lens from the transform marked for autoloading in MODULE should be
+        used.
 
-        The 'incl' and 'excl' grandchildren of /augeas/load indicate which
-        files to transform. Their value are used as glob patterns. Any file
-        that matches at least one 'incl' pattern and no 'excl' pattern is
+        The 'incl' and 'excl' grandchildren of :samp:`/augeas/load` indicate
+        which files to transform. Their value are used as glob patterns. Any
+        file that matches at least one 'incl' pattern and no 'excl' pattern is
         transformed. The order of 'incl' and 'excl' entries is irrelevant.
 
-        When AUG_INIT is first called, it populates /augeas/load with the
-        transforms marked for autoloading in all the modules it finds.
+        When AUG_INIT is first called, it populates :samp:`/augeas/load` with
+        the transforms marked for autoloading in all the modules it finds.
 
-        Before loading any files, AUG_LOAD will remove everything underneath
-        /augeas/files and /files, regardless of whether any entries have been
-        modified or not."""
+        Before loading any files, :func:`load` will remove everything
+        underneath :samp:`/augeas/files` and :samp:`/files`, regardless of
+        whether any entries have been modified or not.
+        """
 
         # Sanity checks
         if not self.__handle:
@@ -511,17 +572,24 @@ class Augeas(object):
             raise RuntimeError("aug_load() failed!")
 
     def clear_transforms(self):
-        """Clear all transforms beneath /augeas/load. If load() is called right
-        after this, there will be no files beneath /files."""
+        """
+        Clear all transforms beneath :samp:`/augeas/load`. If :func:`load` is
+        called right after this, there will be no files beneath :samp:`/files`.
+        """
         self.remove("/augeas/load/*")
 
     def add_transform(self, lens, incl, name=None, excl=()):
-        """Add a transform beneath /augeas/load.
+        """
+        Add a transform beneath :samp:`/augeas/load`.
 
-        lens: the (file)name of the lens to use
-        incl: one or more glob patterns for the files to transform
-        name: deprecated parameter
-        excl: zero or more glob patterns of files to exclude from transforming
+        :param lens: the (file)name of the lens to use
+        :type lens: str
+        :param incl: one or more glob patterns for the files to transform
+        :type incl: str or list(str)
+        :param name: deprecated parameter
+        :param excl: zero or more glob patterns of files to exclude from
+                     transforming
+        :type excl: str or list(str)
         """
 
         if name:
@@ -539,10 +607,12 @@ class Augeas(object):
             self.transform(lens, excl[i], True)
 
     def transform(self, lens, file, excl=False):
-        """Add a transform for 'file' using 'lens'.
-        'excl' specifies if this the file is to be included (False)
-        or excluded (True) from the 'lens'.
-        The 'lens' may be a module name or a full lens name.
+        """
+        Add a transform for `file` using `lens`.
+
+        `excl` specifies if this the file is to be included (:py:obj:`False`)
+        or excluded (:py:obj:`True`) from the `lens`.
+        The `lens` may be a module name or a full lens name.
         If a module name is given, then lns will be the lens assumed.
         """
 
@@ -560,9 +630,11 @@ class Augeas(object):
             raise RuntimeError("Unable to add transform!")
 
     def close(self):
-        """Close this Augeas instance and free any storage associated with it.
+        """
+        Close this Augeas instance and free any storage associated with it.
         After this call, this Augeas instance is invalid and can not be used
-        for any more operations."""
+        for any more operations.
+        """
 
         # If we are already closed, return
         if not self.__handle or self.__handle == ffi.NULL:
@@ -578,7 +650,11 @@ class Augeas(object):
 # for backwards compatibility
 # pylint: disable-msg=C0103
 class augeas(Augeas):
-    "Compat class, obsolete. Use class Augeas directly."
+    """
+    Compat class, obsolete. Use class Augeas directly.
+
+    :deprecated:
+    """
 
     def __init__(self, *p, **k):
         import warnings
