@@ -35,6 +35,10 @@ int aug_text_retrieve(struct augeas *aug, const char *lens,
                       const char *node_out);
 int aug_transform(augeas *aug, const char *lens, const char *file, int excl);
 void aug_close(augeas *aug);
+int aug_error(augeas *aug);
+const char *aug_error_message(augeas *aug);
+const char *aug_error_minor_message(augeas *aug);
+const char *aug_error_details(augeas *aug);
 
 void free(void *);
 """)
