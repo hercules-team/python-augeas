@@ -10,9 +10,11 @@ from setuptools import setup, find_packages
 
 prefix = os.environ.get("prefix", "/usr")
 
+name = 'python-augeas'
+version = '1.0.3'
 
-setup (name = 'python-augeas',
-       version = '1.0.3',
+setup (name = name,
+       version = version,
        author      = "Harald Hoyer",
        author_email = "augeas-devel@redhat.com",
        description = """Python bindings for Augeas""",
@@ -29,4 +31,11 @@ setup (name = 'python-augeas',
            "Programming Language :: Python :: Implementation :: CPython",
            "Programming Language :: Python :: Implementation :: PyPy",
        ],
+       command_options = {
+           'build_sphinx': {
+               'project': ('setup.py', name),
+               'version': ('setup.py', version),
+               'release': ('setup.py', version),
+           }
+       },
        )
