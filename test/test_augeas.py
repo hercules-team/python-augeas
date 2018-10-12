@@ -119,16 +119,16 @@ class TestAugeas(unittest.TestCase):
 
     def test08Span(self):
         "test span"
-        data = [ {"expr": "/files/etc/hosts/1/ipaddr", "f": "hosts",
-                  "ls": 0, "le": 0, "vs": 104, "ve": 113, "ss": 104, "se": 113},
-                 {"expr": "/files/etc/hosts/1", "f": "hosts",
-                  "ls": 0, "le": 0, "vs": 0, "ve": 0, "ss": 104, "se": 155},
-                 {"expr": "/files/etc/hosts/*[last()]", "f": "hosts",
-                  "ls": 0, "le": 0, "vs": 0, "ve": 0, "ss": 155, "se": 202},
-                 {"expr": "/files/etc/hosts/#comment[2]", "f": "hosts",
-                  "ls": 0, "le": 0, "vs": 58, "ve": 103, "ss": 56, "se": 104},
-                 {"expr": "/files/etc/hosts", "f": "hosts",
-                  "ls": 0, "le": 0, "vs": 0, "ve": 0, "ss": 0, "se":202 },
+        data = [{"expr": "/files/etc/hosts/1/ipaddr", "f": "hosts",
+                 "ls": 0, "le": 0, "vs": 104, "ve": 113, "ss": 104, "se": 113},
+                {"expr": "/files/etc/hosts/1", "f": "hosts",
+                 "ls": 0, "le": 0, "vs": 0, "ve": 0, "ss": 104, "se": 155},
+                {"expr": "/files/etc/hosts/*[last()]", "f": "hosts",
+                 "ls": 0, "le": 0, "vs": 0, "ve": 0, "ss": 155, "se": 202},
+                {"expr": "/files/etc/hosts/#comment[2]", "f": "hosts",
+                 "ls": 0, "le": 0, "vs": 58, "ve": 103, "ss": 56, "se": 104},
+                {"expr": "/files/etc/hosts", "f": "hosts",
+                 "ls": 0, "le": 0, "vs": 0, "ve": 0, "ss": 0, "se": 202},
                 ]
         a = augeas.Augeas(root=MYROOT, flags=augeas.Augeas.ENABLE_SPAN)
         for d in data:
