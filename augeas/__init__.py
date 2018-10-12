@@ -176,9 +176,9 @@ class Augeas(object):
         """
 
         # Sanity checks
-        if not isinstance(root, string_types) and root != None:
+        if not isinstance(root, string_types) and root is not None:
             raise TypeError("root MUST be a string or None!")
-        if not isinstance(loadpath, string_types) and loadpath != None:
+        if not isinstance(loadpath, string_types) and loadpath is not None:
             raise TypeError("loadpath MUST be a string or None!")
         if not isinstance(flags, int):
             raise TypeError("flag MUST be a flag!")
@@ -251,7 +251,7 @@ class Augeas(object):
         # Sanity checks
         if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
-        if not isinstance(value, string_types) and type(value) != type(None):
+        if not isinstance(value, string_types) and value is not None:
             raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -273,9 +273,9 @@ class Augeas(object):
         # Sanity checks
         if type(base) != str:
             raise TypeError("base MUST be a string!")
-        if type(sub) != str and sub != None:
+        if type(sub) != str and sub is not None:
             raise TypeError("sub MUST be a string or None!")
-        if type(value) != str and value != None:
+        if type(value) != str and value is not None:
             raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -355,7 +355,7 @@ class Augeas(object):
         # Sanity checks
         if type(name) != str:
             raise TypeError("name MUST be a string!")
-        if type(expr) != str and expr != None:
+        if type(expr) != str and expr is not None:
             raise TypeError("expr MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
