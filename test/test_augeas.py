@@ -4,7 +4,7 @@ import os
 import sys
 import unittest
 
-__mydir = os.path.dirname(sys.argv[0])
+__mydir = os.path.dirname(os.path.abspath(__file__))
 if not os.path.isdir(__mydir):
     __mydir = os.getcwd()
 
