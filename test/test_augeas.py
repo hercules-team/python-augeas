@@ -36,7 +36,7 @@ class TestAugeas(unittest.TestCase):
     def test01aGetNone(self):
         "test aug_get with non-existing path"
         a = augeas.Augeas(root=MYROOT)
-        self.failUnless(a.get("/wrong/path") is None)
+        self.assertIsNone(a.get("/wrong/path"))
         del a
 
     def test01bGetValue(self):
@@ -55,10 +55,10 @@ class TestAugeas(unittest.TestCase):
         "test aug_match"
         a = augeas.Augeas(root=MYROOT)
         matches = a.match("/files/etc/hosts/*")
-        self.failUnless(matches)
+        self.assertTrue(matches)
         for i in matches:
             for attr in a.match(i+"/*"):
-                self.failUnless(a.get(attr) != None)
+                self.assertIsNotNone(a.get(attr))
         del a
 
     def test03PrintAll(self):
@@ -69,7 +69,8 @@ class TestAugeas(unittest.TestCase):
         matches = recurmatch(a, path)
         for (p, attr) in matches:
             print(p, attr, file=output)
-            self.failUnless(p != None and attr != None)
+            self.assertIsNotNone(p)
+            self.assertIsNotNone(attr)
         output.close()
 
     def test04Grub(self):
@@ -93,10 +94,10 @@ class TestAugeas(unittest.TestCase):
         a = augeas.Augeas(root=MYROOT)
         a.defvar("hosts", "/files/etc/hosts")
         matches = a.match("$hosts/*")
-        self.failUnless(matches)
+        self.assertTrue(matches)
         for i in matches:
             for attr in a.match(i+"/*"):
-                self.failUnless(a.get(attr) != None)
+                self.assertIsNotNone(a.get(attr))
         del a
 
     def test06Defnode(self):
@@ -111,7 +112,7 @@ class TestAugeas(unittest.TestCase):
         "test setm"
         a = augeas.Augeas(root=MYROOT)
         matches = a.match("/files/etc/hosts/*/ipaddr")
-        self.failUnless(matches)
+        self.assertTrue(matches)
         a.setm("/files/etc/hosts", "*/ipaddr", "192.168.1.1")
         for i in matches:
             self.assertEqual(a.get(i), "192.168.1.1")
@@ -133,27 +134,17 @@ class TestAugeas(unittest.TestCase):
         a = augeas.Augeas(root=MYROOT, flags=augeas.Augeas.ENABLE_SPAN)
         for d in data:
             r = a.span(d["expr"])
-            self.assertEquals(os.path.basename(r[0]), d["f"])
-            self.assertEquals(r[1], d["ls"])
-            self.assertEquals(r[2], d["le"])
-            self.assertEquals(r[3], d["vs"])
-            self.assertEquals(r[4], d["ve"])
-            self.assertEquals(r[5], d["ss"])
-            self.assertEquals(r[6], d["se"])
+            self.assertEqual(os.path.basename(r[0]), d["f"])
+            self.assertEqual(r[1], d["ls"])
+            self.assertEqual(r[2], d["le"])
+            self.assertEqual(r[3], d["vs"])
+            self.assertEqual(r[4], d["ve"])
+            self.assertEqual(r[5], d["ss"])
+            self.assertEqual(r[6], d["se"])
 
-        error = None
-        try:
-            a.span("/files")
-        except ValueError as e:
-            error = e
-        self.assertTrue(isinstance(error, ValueError))
+        self.assertRaises(ValueError, a.span, "/files")
 
-        error = None
-        try:
-            a.span("/random")
-        except ValueError as e:
-            error = e
-        self.assertTrue(isinstance(error, ValueError))
+        self.assertRaises(ValueError, a.span, "/random")
 
         del a
 
@@ -164,11 +155,8 @@ class TestAugeas(unittest.TestCase):
         a.text_store("Hosts.lns", "/raw/hosts", "/t1")
 
         # Test bad lens name
-        try:
-            a.text_store("Notthere.lns", "/raw/hosts", "/t2")
-        except ValueError as e:
-            error = e
-        self.assertTrue(isinstance(error, ValueError))
+        self.assertRaises(ValueError, a.text_store,
+                          "Notthere.lns", "/raw/hosts", "/t2")
 
     def testSetNone(self):
         a = augeas.Augeas(root=MYROOT)
@@ -184,11 +172,8 @@ class TestAugeas(unittest.TestCase):
         self.assertEqual(hosts, hosts_out)
 
         # Test bad lens name
-        try:
-            a.text_store("Notthere.lns", "/raw/hosts", "/t2")
-        except ValueError as e:
-            error = e
-        self.assertTrue(isinstance(error, ValueError))
+        self.assertRaises(ValueError, a.text_store,
+                          "Notthere.lns", "/raw/hosts", "/t2")
 
     def test11Rename(self):
         a = augeas.Augeas(root=MYROOT)
@@ -198,11 +183,7 @@ class TestAugeas(unittest.TestCase):
         a.set("/a/e/d", "value2")
         r = a.rename("/a//d", "x")
         self.assertEqual(r, 2)
-        try:
-           a.rename("/a/e/x", "a/b")
-        except ValueError as e:
-            error = e
-        self.assertTrue(isinstance(error, ValueError))
+        self.assertRaises(ValueError, a.rename, "/a/e/x", "a/b")
 
     def test12Transform(self):
         a = augeas.Augeas(root=MYROOT)
@@ -251,12 +232,12 @@ class TestAugeas(unittest.TestCase):
         a.set(orig_path, orig_value)
 
         matches = a.match(orig_path)
-        self.failUnless(matches)
+        self.assertTrue(matches)
 
         a.copy(orig_path, copy_path)
 
         matches = a.match(copy_path)
-        self.failUnless(matches)
+        self.assertTrue(matches)
         self.assertEqual(a.get(copy_path), a.get(orig_path))
 
     def testClose(self):
