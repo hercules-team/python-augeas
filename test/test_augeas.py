@@ -14,6 +14,7 @@ import augeas
 
 MYROOT = __mydir + "/testroot"
 
+
 def recurmatch(aug, path):
     if path:
         if path != "/":
@@ -31,6 +32,7 @@ def recurmatch(aug, path):
             for i in aug.match(path + "/*"):
                 for x in recurmatch(aug, i):
                     yield x
+
 
 class TestAugeas(unittest.TestCase):
     def test01aGetNone(self):
