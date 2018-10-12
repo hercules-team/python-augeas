@@ -205,7 +205,7 @@ class TestAugeas(unittest.TestCase):
         incl = a.get("/augeas/load/Foo/incl")
         self.assertEqual(incl, "/tmp/bar")
 
-        a.add_transform("Foo", "/tmp/bar", "Faz", "/tmp/baz")
+        a.add_transform("Foo", "/tmp/bar", excl="/tmp/baz")
         excl = a.get("/augeas/load/Foo/excl")
         self.assertEqual(excl, "/tmp/baz")
 
