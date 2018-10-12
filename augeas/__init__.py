@@ -30,15 +30,15 @@ format and the transformation into a tree.
 #
 # Author: Nathaniel McCallum <nathaniel@natemccallum.com>
 
+from sys import version_info as _pyver
+
+from augeas.ffi import ffi, lib
+
 __author__ = "Nathaniel McCallum <nathaniel@natemccallum.com>"
 __credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
 Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 Nils Philippsen <nils@redhat.com>
 """
-from sys import version_info as _pyver
-
-from augeas.ffi import ffi, lib
-
 PY3 = _pyver >= (3,)
 AUGENC = 'utf8'
 
