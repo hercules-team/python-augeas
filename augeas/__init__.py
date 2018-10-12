@@ -187,7 +187,8 @@ class Augeas(object):
         loadpath = enc(loadpath) if loadpath else ffi.NULL
 
         # Create the Augeas object
-        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags), lambda x: self.close)
+        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags),
+                               lambda x: self.close)
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
 
@@ -663,8 +664,8 @@ class Augeas(object):
 
         if name:
             import warnings
-            warnings.warn("name is now deprecated in this function", DeprecationWarning,
-                          stacklevel=2)
+            warnings.warn("name is now deprecated in this function",
+                          DeprecationWarning, stacklevel=2)
         if isinstance(incl, string_types):
             incl = [incl]
         if isinstance(excl, string_types):
