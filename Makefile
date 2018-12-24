@@ -21,7 +21,7 @@ sdist:
 	PREFIX=$(PREFIX) python setup.py sdist
 
 check:
-	make -C test check
+	PREFIX=$(PREFIX) python setup.py test
 
 srpm: sdist
 	cp python-augeas.spec dist

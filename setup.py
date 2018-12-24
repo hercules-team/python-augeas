@@ -38,4 +38,5 @@ setup(name=name,
               'release': ('setup.py', version),
           }
       },
+      test_suite="test.test_augeas",
       )
