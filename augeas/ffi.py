@@ -15,7 +15,8 @@ int aug_defnode(augeas *aug, const char *name, const char *expr,
 int aug_get(const augeas *aug, const char *path, const char **value);
 int aug_label(const augeas *aug, const char *path, const char **label);
 int aug_set(augeas *aug, const char *path, const char *value);
-int aug_setm(augeas *aug, const char *base, const char *sub, const char *value);
+int aug_setm(augeas *aug, const char *base, const char *sub,
+             const char *value);
 int aug_span(augeas *aug, const char *path, char **filename,
         unsigned int *label_start, unsigned int *label_end,
         unsigned int *value_start, unsigned int *value_end,

@@ -30,15 +30,15 @@ format and the transformation into a tree.
 #
 # Author: Nathaniel McCallum <nathaniel@natemccallum.com>
 
+from sys import version_info as _pyver
+
+from augeas.ffi import ffi, lib
+
 __author__ = "Nathaniel McCallum <nathaniel@natemccallum.com>"
 __credits__ = """Jeff Schroeder <jeffschroeder@computer.org>
 Harald Hoyer <harald@redhat.com> - initial python bindings, packaging
 Nils Philippsen <nils@redhat.com>
 """
-from sys import version_info as _pyver
-
-from augeas.ffi import ffi, lib
-
 PY3 = _pyver >= (3,)
 AUGENC = 'utf8'
 
@@ -176,9 +176,9 @@ class Augeas(object):
         """
 
         # Sanity checks
-        if not isinstance(root, string_types) and root != None:
+        if not isinstance(root, string_types) and root is not None:
             raise TypeError("root MUST be a string or None!")
-        if not isinstance(loadpath, string_types) and loadpath != None:
+        if not isinstance(loadpath, string_types) and loadpath is not None:
             raise TypeError("loadpath MUST be a string or None!")
         if not isinstance(flags, int):
             raise TypeError("flag MUST be a flag!")
@@ -187,7 +187,8 @@ class Augeas(object):
         loadpath = enc(loadpath) if loadpath else ffi.NULL
 
         # Create the Augeas object
-        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags), lambda x: self.close)
+        self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags),
+                               lambda x: self.close)
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
 
@@ -251,7 +252,7 @@ class Augeas(object):
         # Sanity checks
         if not isinstance(path, string_types):
             raise TypeError("path MUST be a string!")
-        if not isinstance(value, string_types) and type(value) != type(None):
+        if not isinstance(value, string_types) and value is not None:
             raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -273,9 +274,9 @@ class Augeas(object):
         # Sanity checks
         if type(base) != str:
             raise TypeError("base MUST be a string!")
-        if type(sub) != str and sub != None:
+        if type(sub) != str and sub is not None:
             raise TypeError("sub MUST be a string or None!")
-        if type(value) != str and value != None:
+        if type(value) != str and value is not None:
             raise TypeError("value MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -355,7 +356,7 @@ class Augeas(object):
         # Sanity checks
         if type(name) != str:
             raise TypeError("name MUST be a string!")
-        if type(expr) != str and expr != None:
+        if type(expr) != str and expr is not None:
             raise TypeError("expr MUST be a string or None!")
         if not self.__handle:
             raise RuntimeError("The Augeas object has already been closed!")
@@ -663,8 +664,8 @@ class Augeas(object):
 
         if name:
             import warnings
-            warnings.warn("name is now deprecated in this function", DeprecationWarning,
-                          stacklevel=2)
+            warnings.warn("name is now deprecated in this function",
+                          DeprecationWarning, stacklevel=2)
         if isinstance(incl, string_types):
             incl = [incl]
         if isinstance(excl, string_types):
