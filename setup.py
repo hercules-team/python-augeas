@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 prefix = os.environ.get("prefix", "/usr")
 
 name = 'python-augeas'
-version = '1.0.3'
+version = '1.1.0'
 
 setup(name=name,
       version=version,
