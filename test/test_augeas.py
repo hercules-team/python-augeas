@@ -242,6 +242,27 @@ class TestAugeas(unittest.TestCase):
         self.assertTrue(matches)
         self.assertEqual(a.get(copy_path), a.get(orig_path))
 
+    def test16LoadFile(self):
+        a = augeas.Augeas(root=MYROOT, flags=augeas.Augeas.NO_LOAD)
+        a.load_file('/etc/hosts')
+        canonical = a.get('/files/etc/hosts/*[ipaddr = \'::1\']/canonical')
+        self.assertEqual(canonical,'localhost.localdomain')
+
+    def test17Source(self):
+        a = augeas.Augeas(root=MYROOT)
+        source_file = a.source('/files/etc/hosts/1/ipaddr')
+        self.assertEqual(source_file,'/files/etc/hosts')
+
+    def test18Srun(self):
+        a = augeas.Augeas(root=MYROOT)
+        output_srun = open('test18Srun.out', 'w')
+        a.srun(output_srun,'count /files/etc/hosts//ipaddr')
+        output_srun.close()
+        output_srun = open('test18Srun.out', 'r')
+        srun_text = output_srun.read()
+        output_srun.close()
+        self.assertEqual(srun_text.strip(),'2 matches')
+
     def testClose(self):
         a = augeas.Augeas(root=MYROOT)
         a.close()

@@ -641,6 +641,46 @@ class Augeas(object):
         if ret != 0:
             self._raise_error(AugeasRuntimeError, "Augeas.load() failed")
 
+    def load_file(self, filename):
+        # Sanity checks
+        if not isinstance(filename, string_types):
+            raise TypeError("filename MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        ret = lib.aug_load_file(self.__handle, enc(filename))
+        if ret != 0:
+            raise RuntimeError("aug_load_file() failed!")
+
+    def source(self, path):
+        # Sanity checks
+        if not isinstance(path, string_types):
+            raise TypeError("path MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Create the char * value
+        value = ffi.new("char*[]", 1)
+
+        ret = lib.aug_source(self.__handle, enc(path), value)
+        if ret != 0:
+            raise RuntimeError("aug_source() failed!")
+
+        return self._optffistring(value[0])
+
+    def srun(self, out, command):
+        # Sanity checks
+        if not hasattr(out, 'write'):
+            raise TypeError("out MUST be a file!")
+        if not isinstance(command, string_types):
+            raise TypeError("path MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        ret = lib.aug_srun(self.__handle, out, enc(command))
+        if ret < 0:
+            raise RuntimeError("aug_srun() failed! (%d)" % ret)
+
     def clear_transforms(self):
         """
         Clear all transforms beneath :samp:`/augeas/load`. If :func:`load` is
