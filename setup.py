@@ -22,6 +22,7 @@ setup(name=name,
       setup_requires=["cffi>=1.0.0"],
       cffi_modules=["augeas/ffi.py:ffi"],
       install_requires=["cffi>=1.0.0"],
+      zip_safe=False,
       url="http://augeas.net/",
       classifiers=[
           "Programming Language :: Python :: 2.7",

@@ -1,9 +1,28 @@
+import os
+import subprocess
+
 from cffi import FFI
 
+def get_include_dirs():
+    XML2_CONFIG = os.environ.get('XML2_CONFIG', 'xml2-config')
+    PKG_CONFIG = os.environ.get('PKG_CONFIG', 'pkg-config')
+    try:
+        stdout = subprocess.check_output([XML2_CONFIG, '--cflags'])
+    except (OSError, subprocess.CalledProcessError):
+        try:
+            stdout = subprocess.check_output([PKG_CONFIG, '--cflags', 'libxml-2.0'])
+        except (OSError, subprocess.CalledProcessError):
+            stdout = b''
+    cflags = stdout.decode('utf-8').split()
+    return [cflag[2:] for cflag in cflags if cflag.startswith('-I')]
+
 ffi = FFI()
-ffi.set_source("augeas",
-               None,
-               libraries=['augeas'])
+ffi.set_source("_augeas",
+               """
+               #include <augeas.h>
+               """,
+               libraries=['augeas'],
+               include_dirs=get_include_dirs())
 
 ffi.cdef("""
 typedef struct augeas augeas;
@@ -58,8 +77,6 @@ const char *aug_error_details(augeas *aug);
 
 void free(void *);
 """)
-
-lib = ffi.dlopen("augeas")
 
 if __name__ == "__main__":
     ffi.compile(verbose=True)
