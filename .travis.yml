@@ -11,8 +11,8 @@ python:
 notifications: {}
 dist: focal
 install:
-- sudo apt-get update
-- sudo apt-get install libaugeas-dev
+- git clone  --depth 1 https://github.com/hercules-team/augeas.git libaugeas
+- bash -c 'cd libaugeas ; ./autogen.sh ; ./configure --prefix=/usr; make; sudo make install'
 - pip install .
 script: make check
 deploy:
