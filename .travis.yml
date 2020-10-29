@@ -5,15 +5,14 @@ python:
 - 3.6
 - 3.7
 - 3.8
+- 3.9
 - pypy2
 - pypy3
 notifications: {}
-dist: bionic
+dist: focal
 install:
 - sudo apt-get update
 - sudo apt-get install libaugeas-dev
-- wget http://mirrors.kernel.org/ubuntu/pool/universe/a/augeas/libaugeas0_1.12.0-1build1_amd64.deb
-- sudo dpkg -i libaugeas0_1.12.0-1build1_amd64.deb
 - pip install .
 script: make check
 deploy:
