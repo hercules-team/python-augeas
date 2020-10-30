@@ -38,6 +38,17 @@ int aug_transform(augeas *aug, const char *lens, const char *file, int excl);
 int aug_source(const augeas *aug, const char *path, char **file_path);
 int aug_srun(augeas *aug, FILE *out, const char *text);
 int aug_load_file(augeas *aug, const char *file);
+int aug_preview(augeas *aug, const char *path, char **out);
+int aug_ns_attr(const augeas* aug, const char *var, int i,
+                const char **value, const char **label, char **file_path);
+int aug_ns_label(const augeas *aug, const char *var, int i,
+                 const char **label, int *index);
+int aug_ns_value(const augeas *aug, const char *var, int i,
+                 const char **value);
+int aug_ns_count(const augeas *aug, const char *var);
+int aug_ns_path(const augeas *aug, const char *var, int i, char **path);
+
+
 
 void aug_close(augeas *aug);
 int aug_error(augeas *aug);
