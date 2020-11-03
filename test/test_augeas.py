@@ -263,6 +263,35 @@ class TestAugeas(unittest.TestCase):
         output_srun.close()
         self.assertEqual(srun_text.strip(),'2 matches')
 
+    def test20Preview(self):
+        "test preview"
+        a = augeas.Augeas(root=MYROOT)
+        preview = a.preview("/files/etc/hosts/1/ipaddr")
+        etc_hosts = open(MYROOT+'/etc/hosts', 'r')
+        etc_hosts_text = etc_hosts.read()
+        etc_hosts.close()
+        self.assertEqual(preview, etc_hosts_text)
+        del a
+
+    def test21Ns_attr(self):
+        "test ns_attr, ns_label, ns_value, ns_count, ns_path"
+        a = augeas.Augeas(root=MYROOT)
+        a.defvar("hosts", "/files/etc/hosts/*")
+        a.defvar("hosts_1", "/files/etc/hosts/1/*")
+        (value, label, file_path )  = a.ns_attr("hosts_1",2)
+        self.assertEqual(label, "alias")
+        self.assertEqual(value, "localhost")
+        self.assertEqual(file_path, "/files/etc/hosts")
+        value = a.ns_value("hosts_1",1)
+        self.assertEqual(value, "localhost.localdomain")
+        ( label, index) = a.ns_label("hosts_1",1)
+        self.assertEqual(label, "canonical")
+        self.assertEqual(index, 0)
+        count = a.ns_count("hosts")
+        self.assertEqual(count, 4)
+        path = a.ns_path("hosts",2)
+        self.assertEqual(path, "/files/etc/hosts/1")
+
     def testClose(self):
         a = augeas.Augeas(root=MYROOT)
         a.close()

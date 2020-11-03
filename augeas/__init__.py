@@ -681,6 +681,96 @@ class Augeas(object):
         if ret < 0:
             raise RuntimeError("aug_srun() failed! (%d)" % ret)
 
+    def preview(self, path):
+        # Sanity checks
+        if not isinstance(path, string_types):
+            raise TypeError("path MUST be a string!")
+        if not self.__handle:
+            raise RuntimeError("The Augeas object has already been closed!")
+
+        # Create the char * value
+        out = ffi.new("char*[]", 1)
+
+        ret = lib.aug_preview(self.__handle, enc(path), out)
+        if ret < 0:
+            raise RuntimeError("aug_preview() failed! (%d)" % ret)
+        return self._optffistring(out[0])
+
+    def ns_attr(self, name, index):
+        # Sanity checks
+        if not isinstance(name, string_types):
+            raise TypeError("name MUST be a string!")
+        if not isinstance(index, int):
+            raise TypeError("index MUST be an integer!")
+        value = ffi.new("char*[]", 1)
+        label = ffi.new("char*[]", 1)
+        file_path  = ffi.new("char*[]", 1)
+
+        ret = lib.aug_ns_attr(self.__handle, enc(name), index, value, label, file_path)
+        if ret < 0:
+            raise RuntimeError("aug_ns_attr() failed! (%d)" % ret)
+
+        return (self._optffistring(value[0]), self._optffistring(label[0]), self._optffistring(file_path[0]) )
+
+    def ns_label(self, name, index):
+        # Sanity checks
+        if not isinstance(name, string_types):
+            raise TypeError("name MUST be a string!")
+        if not isinstance(index, int):
+            raise TypeError("index MUST be an integer!")
+
+        # Create the char * value
+        label = ffi.new("char*[]", 1)
+        labelindex = ffi.new("int*", 1)
+
+        ret = lib.aug_ns_label(self.__handle, enc(name), index, label, labelindex)
+
+        if ret < 0:
+            raise RuntimeError("aug_label() failed! (%d)" % ret)
+
+        return (self._optffistring(label[0]), labelindex[0] )
+
+    def ns_value(self, name, index):
+        # Sanity checks
+        if not isinstance(name, string_types):
+            raise TypeError("name MUST be a string!")
+        if not isinstance(index, int):
+            raise TypeError("index MUST be an integer!")
+
+        # Create the char * value
+        value = ffi.new("char*[]", 1)
+
+        ret = lib.aug_ns_value(self.__handle, enc(name), index, value)
+        if ret < 0:
+            raise RuntimeError("aug_ns_value() failed! (%d)" % ret)
+        return self._optffistring(value[0])
+
+    def ns_count(self, name):
+        # Sanity checks
+        if not isinstance(name, string_types):
+            raise TypeError("name MUST be a string!")
+        ret = lib.aug_ns_count(self.__handle, enc(name))
+        if ret < 0:
+            raise RuntimeError("aug_ns_count() failed! (%d)" % ret)
+        return ret
+
+
+    def ns_path(self, name, index):
+        # Sanity checks
+        if not isinstance(name, string_types):
+            raise TypeError("name MUST be a string!")
+        if not isinstance(index, int):
+            raise TypeError("index MUST be an integer!")
+
+        # Create the char * value
+        path = ffi.new("char*[]", 1)
+
+        ret = lib.aug_ns_path(self.__handle, enc(name), index, path)
+        if ret < 0:
+            raise RuntimeError("aug_ns_path() failed! (%d)" % ret)
+        return self._optffistring(path[0])
+
+
     def clear_transforms(self):
         """
         Clear all transforms beneath :samp:`/augeas/load`. If :func:`load` is
