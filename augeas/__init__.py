@@ -650,7 +650,7 @@ class Augeas(object):
 
         ret = lib.aug_load_file(self.__handle, enc(filename))
         if ret != 0:
-            raise RuntimeError("aug_load_file() failed!")
+            self._raise_error(AugeasRuntimeError, "Augeas.load_file() failed")
 
     def source(self, path):
         # Sanity checks
@@ -664,7 +664,7 @@ class Augeas(object):
 
         ret = lib.aug_source(self.__handle, enc(path), value)
         if ret != 0:
-            raise RuntimeError("aug_source() failed!")
+            self._raise_error(AugeasRuntimeError, "Augeas.source() failed")
 
         return self._optffistring(value[0])
 
@@ -679,7 +679,8 @@ class Augeas(object):
 
         ret = lib.aug_srun(self.__handle, out, enc(command))
         if ret < 0:
-            raise RuntimeError("aug_srun() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError,
+                              "Augeas.srun() failed (%d)", ret)
 
     def preview(self, path):
         # Sanity checks
@@ -693,7 +694,7 @@ class Augeas(object):
 
         ret = lib.aug_preview(self.__handle, enc(path), out)
         if ret < 0:
-            raise RuntimeError("aug_preview() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError, "Augeas.preview() failed")
         return self._optffistring(out[0])
 
     def ns_attr(self, name, index):
@@ -708,7 +709,7 @@ class Augeas(object):
 
         ret = lib.aug_ns_attr(self.__handle, enc(name), index, value, label, file_path)
         if ret < 0:
-            raise RuntimeError("aug_ns_attr() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError, "Augeas.ns_attr() failed")
 
         return (self._optffistring(value[0]), self._optffistring(label[0]), self._optffistring(file_path[0]) )
 
@@ -726,7 +727,7 @@ class Augeas(object):
         ret = lib.aug_ns_label(self.__handle, enc(name), index, label, labelindex)
 
         if ret < 0:
-            raise RuntimeError("aug_label() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError, "Augeas.ns_label() failed")
 
         return (self._optffistring(label[0]), labelindex[0] )
 
@@ -742,7 +743,7 @@ class Augeas(object):
 
         ret = lib.aug_ns_value(self.__handle, enc(name), index, value)
         if ret < 0:
-            raise RuntimeError("aug_ns_value() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError, "Augeas.ns_value() failed")
         return self._optffistring(value[0])
 
     def ns_count(self, name):
@@ -751,7 +752,7 @@ class Augeas(object):
             raise TypeError("name MUST be a string!")
         ret = lib.aug_ns_count(self.__handle, enc(name))
         if ret < 0:
-            raise RuntimeError("aug_ns_count() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError, "Augeas.ns_count() failed")
         return ret
 
 
@@ -767,7 +768,7 @@ class Augeas(object):
 
         ret = lib.aug_ns_path(self.__handle, enc(name), index, path)
         if ret < 0:
-            raise RuntimeError("aug_ns_path() failed! (%d)" % ret)
+            self._raise_error(AugeasRuntimeError, "Augeas.ns_path() failed")
         return self._optffistring(path[0])
 
 
