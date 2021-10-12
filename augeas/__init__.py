@@ -188,7 +188,7 @@ class Augeas(object):
 
         # Create the Augeas object
         self.__handle = ffi.gc(lib.aug_init(root, loadpath, flags),
-                               lambda x: self.close)
+                               lambda x: self.close())
         if not self.__handle:
             raise RuntimeError("Unable to create Augeas object!")
 
