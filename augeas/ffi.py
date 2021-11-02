@@ -1,4 +1,5 @@
 import os
+import sys
 import subprocess
 
 from cffi import FFI
@@ -16,12 +17,18 @@ def get_include_dirs():
     cflags = stdout.decode('utf-8').split()
     return [cflag[2:] for cflag in cflags if cflag.startswith('-I')]
 
+if sys.platform == "darwin":
+    _libaugeas = "libaugeas.dylib"
+else:
+    _libaugeas = "libaugeas.so"
+
+
 ffi = FFI()
 ffi.set_source("_augeas",
                """
                #include <augeas.h>
                """,
-               libraries=['augeas'],
+               libraries=[_libaugeas],
                include_dirs=get_include_dirs())
 
 ffi.cdef("""
