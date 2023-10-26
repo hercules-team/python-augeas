@@ -1,6 +1,6 @@
 Name:		python-augeas
-Version:	1.1.0
-Release:	2%{?dist}
+Version:	1.2.0
+Release:	1%{?dist}
 Summary:	Python bindings to augeas
 License:	LGPL-2.1-or-later
 URL:		http://augeas.net/
