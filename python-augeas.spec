@@ -41,7 +41,7 @@ python3-augeas is a set of Python bindings around augeas.
 %files -n python3-augeas
 %license COPYING
 %doc AUTHORS README.md
-%{python3_sitearch}/_augeas.abi3.so
+%{python3_sitearch}/_augeas.abi3*.so
 %{python3_sitearch}/augeas/
 %{python3_sitearch}/python_augeas-*.egg-info
 
